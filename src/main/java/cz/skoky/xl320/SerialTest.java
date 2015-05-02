@@ -4,9 +4,6 @@ import jssc.SerialPort;
 import jssc.SerialPortException;
 import jssc.SerialPortList;
 
-import java.lang.reflect.Array;
-import java.util.Arrays;
-
 /**
  * Created by skokan on 30.4.15.
  */
@@ -29,7 +26,7 @@ public class SerialTest {
                     byte[] buffer = serialPort.readBytes(5);
                     if (buffer!=null)
                         if (buffer.length>0)
-                            System.out.println("Data:"+ buffer.length+ ":" + Arrays.toString(buffer));
+                            System.out.println("Data:"+ buffer.length+ ":" + new String(buffer));
                 }
 
             }
