@@ -18,4 +18,5 @@ public class UsbSender {
     public byte[] waitForResponse() {
         return new byte[]{1,2};
     }
+
 }

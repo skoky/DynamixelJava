@@ -1,4 +1,3 @@
-
 #define DXL_BUS_SERIAL1 1
 Dynamixel Dxl(DXL_BUS_SERIAL1);
 byte servo;
@@ -7,7 +6,9 @@ byte address;
 void setup() {
   // setup communication to servos, speed 1Mb
   Dxl.begin(3);
-  
+  // Dxl.jointMode(1);
+ Dxl.wheelMode(1); 
+
   SerialUSB.attachInterrupt(usbInterrupt);
   pinMode(BOARD_LED_PIN, OUTPUT);  //toggleLED_Pin_Out
 
@@ -16,10 +17,10 @@ void setup() {
 //USB max packet data is maximum 64byte, so nCount can not exceeds 64 bytes
 // X Y A B 
 void usbInterrupt(byte* buffer, byte nCount) {
-  SerialUSB.print("//Received data, length ");
-  SerialUSB.println(nCount);
-  
-  if (nCount>5) {
+  //  SerialUSB.print("//Received data, length ");
+  //  SerialUSB.println(nCount);
+
+  if (nCount>5 || nCount <3) {
     SerialUSB.println("#data too long!");
     return;
   }
@@ -28,36 +29,36 @@ void usbInterrupt(byte* buffer, byte nCount) {
   byte byteData = buffer[3];
   word wordData = buffer[3]*255+buffer[4];
   switch (buffer[0]) {
-    case 1:  // write byte
-      byteData = buffer[3];
-      Dxl.writeByte(servo, address, buffer[3]);
+  case 1:  // write byte
+    byteData = buffer[3];
+    Dxl.writeByte(servo, address, buffer[3]);
     break;
-    case 2:  // read byte
-      byteData = Dxl.readByte(servo,address);
-      SerialUSB.write(byteData);
+  case 2:  // read byte
+    byteData = Dxl.readByte(servo,address);
+    SerialUSB.write(byteData);
     break;
-    case 3:  // write word
-      SerialUSB.println(nCount);
-      wordData = word(buffer[3]);
-      Dxl.writeWord(servo, address, wordData);      
+  case 3:  // write word
+    SerialUSB.println(nCount);
+    wordData = word(buffer[3]);
+    Dxl.writeWord(servo, address, wordData);      
     break;
-    case 4:  // read word
-      wordData = Dxl.readWord(servo,address);
-      SerialUSB.print("//Word extracted");
-      SerialUSB.write(wordData);
+  case 4:  // read word
+    wordData = Dxl.readWord(servo,address);
+    //      SerialUSB.print("//Word extracted");
+    SerialUSB.write(wordData);
     break;
-   // default: 
-      // WTF?
+  default: 
+    SerialUSB.println("#Invalid command!");
   }
 }
-    
+
 
 void loop(){
   toggleLED();
-  SerialUSB.println("Positions TBD");
-  
-  delay(100);
-    
-
-
+  // SerialUSB.println("Positions TBD");
+  word p = Dxl.readWord(1,0x37);
+  SerialUSB.write("abc");
+  delay(1000);
 }
+
+

@@ -8,6 +8,7 @@ repositories {
 }
 
 dependencies {
+    compile 'org.scream3r:jssc:2.8.0'
     testCompile 'junit:junit:4.11'
     testCompile 'org.mockito:mockito-all:1.10.19'
 }
