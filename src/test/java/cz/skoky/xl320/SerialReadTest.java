@@ -11,13 +11,18 @@ import java.util.Arrays;
 public class SerialReadTest {
 
     @Test
-    public void testSerialReading() throws SerialPortException {
-        byte[] buf = new byte[]{3,1,0x36,0,0};
+    public void testSerialReading() throws SerialPortException, InterruptedException {
+        byte[] buf = new byte[]{4,1,2,0x54,0};
         USBPort port = new USBPort("/dev/ttyACM0");
         port.openPort();
-        port.writeData(buf);
-        Integer response = port.readResponse();
-        System.out.println("Response:"+ response);
-        port.closePort();
+        // port.writeData(buf);
+        while(true) {
+            Thread.sleep(3000);
+            port.writeData(buf);
+            Integer response = port.readResponse(7);
+            System.out.println("Response:" + response);
+
+        }
+        // port.closePort();
     }
 }
