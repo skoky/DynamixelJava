@@ -1,4 +1,7 @@
 #define DXL_BUS_SERIAL1 1
+#define highByte(x) ( (x) >> (8) ) // keep upper 8 bits
+#define lowByte(x) ( (x) & (0xff) ) // keep lower 8 bits
+
 Dynamixel Dxl(DXL_BUS_SERIAL1);
 byte servo;
 byte address;
@@ -15,7 +18,11 @@ void setup() {
 }
 
 //USB max packet data is maximum 64byte, so nCount can not exceeds 64 bytes
-// X Y A B 
+// C S R A B
+// C = command - 1,2,3 or 4
+// S = Servo ID
+// R = Register ID
+// A and B is value A for byte and A+B for word
 void usbInterrupt(byte* buffer, byte nCount) {
   //  SerialUSB.print("//Received data, length ");
   //  SerialUSB.println(nCount);
@@ -35,7 +42,8 @@ void usbInterrupt(byte* buffer, byte nCount) {
     break;
   case 2:  // read byte
     byteData = Dxl.readByte(servo,address);
-    SerialUSB.write(byteData);
+    buffer[3]=byteData;
+    SerialUSB.write(buffer,5);
     break;
   case 3:  // write word
     SerialUSB.println(nCount);
@@ -45,19 +53,23 @@ void usbInterrupt(byte* buffer, byte nCount) {
   case 4:  // read word
     wordData = Dxl.readWord(servo,address);
     //      SerialUSB.print("//Word extracted");
-    SerialUSB.write(wordData);
+    buffer[3]=highByte(wordData);
+    buffer[4]=lowByte(wordData);
+    SerialUSB.write(buffer,5);
     break;
   default: 
     SerialUSB.println("#Invalid command!");
   }
 }
 
-
 void loop(){
   toggleLED();
   // SerialUSB.println("Positions TBD");
-  word p = Dxl.readWord(1,0x37);
-  SerialUSB.write("abc");
+  byte b[5];
+  word p = Dxl.readWord(1,0x36);
+  b[3]=highByte(p);
+  b[4]=lowByte(p);
+  SerialUSB.write(b,5);
   delay(1000);
 }
 
