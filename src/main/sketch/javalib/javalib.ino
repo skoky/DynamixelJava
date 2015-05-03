@@ -1,4 +1,7 @@
 #define DXL_BUS_SERIAL1 1
+#define J_ID 1
+#define PRESENT_POS 54
+
 
 Dynamixel Dxl(DXL_BUS_SERIAL1);
 byte servo;
@@ -15,6 +18,8 @@ void setup() {
 
   SerialUSB.attachInterrupt(usbInterrupt);
   pinMode(BOARD_LED_PIN, OUTPUT);  //toggleLED_Pin_Out
+
+  Dxl.maxTorque(J_ID,1); // it has maxtorque for weak movement
   command=0;
 }
 
