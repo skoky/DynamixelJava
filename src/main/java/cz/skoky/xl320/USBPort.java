@@ -23,10 +23,11 @@ public class USBPort {
         System.out.println("Available ports:" + Arrays.toString(portNames));
     }
 
-    public void openPort() throws SerialPortException {
+    public boolean openPort() throws SerialPortException {
         serialPort = new SerialPort("/dev/ttyACM0");
-        serialPort.openPort();//Open serial port
-        serialPort.setParams(115200, 8, 1, 0);//Set params.
+        boolean isOpen = serialPort.openPort();//Open serial port
+        if (isOpen) serialPort.setParams(115200, 8, 1, 0);//Set params.
+        return isOpen;
     }
 
     public String readResponse() {
