@@ -42,8 +42,8 @@ public class USBPort {
             }
             i++;
             byte[] resultBuffer= Arrays.copyOf(buffer, i);
-            String result = new String(Arrays.copyOf(resultBuffer,i), "US-ASCII");
-            System.out.print("Received:" + resultBuffer.length + ":" + Arrays.toString(resultBuffer) + " / " + result);
+            String result = new String(Arrays.copyOf(resultBuffer,i), "US-ASCII").replace("\r","").replace("\n","");
+            System.out.println("Received:" + resultBuffer.length + ":" + Arrays.toString(resultBuffer) + " / " + result);
             return result;
         } catch (SerialPortException ex) {
             ex.printStackTrace();

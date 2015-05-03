@@ -1,7 +1,4 @@
 #define DXL_BUS_SERIAL1 1
-#define highByte(x) ( (x) >> (8) ) // keep upper 8 bits
-#define lowByte(x) ( (x) & (0xff) ) // keep lower 8 bits
-
 #define J_ID 1
 #define PRESENT_POS 54
 
@@ -16,8 +13,8 @@ int i;
 void setup() {
   // setup communication to servos, speed 1Mb
   Dxl.begin(3);
-//  Dxl.jointMode(1);
- Dxl.wheelMode(1);
+  Dxl.jointMode(1);
+// Dxl.wheelMode(1);
 
   SerialUSB.attachInterrupt(usbInterrupt);
   pinMode(BOARD_LED_PIN, OUTPUT);  //toggleLED_Pin_Out
@@ -33,9 +30,10 @@ void setup() {
 // R = Register ID
 // A and B is value A for byte and A+B for word
 void usbInterrupt(byte* buffer, byte nCount) {
-
+  toggleLED();
   if (nCount!=5) {
-    SerialUSB.println(100);
+    SerialUSB.println(100); //error
+    toggleLED();
     return;
   }
 
@@ -46,48 +44,41 @@ void usbInterrupt(byte* buffer, byte nCount) {
   case 1:  // write byte
     Dxl.writeByte(servo, address, buffer[3]);
     SerialUSB.println(buffer[3]);
+    toggleLED();
     break;
   case 2:  // read byte
-//    b = Dxl.readByte(servo,address);
-//    SerialUSB.println(b);
+    // direct read in the interrupt does not work
+    // this is handled in the loop()    
     break;
   case 3:  // write word
     i = buffer[3]*255;  
     i = i + buffer[4];
     Dxl.writeWord(servo, address, i);      
     SerialUSB.println(i);
+    toggleLED();
     break;
   case 4:  // read word
-    // result will be picked by loop
-    // i = Dxl.readWord(servo,address);
-    // i = Dxl.readWord(J_ID, PRESENT_POS);
-    // SerialUSB.println(i);
+    // direct read in the interrupt does not work
+    // this is handled in the loop()
     break;
   default: 
-    SerialUSB.println(101);
+    SerialUSB.println(101); // error
+    toggleLED();
   } 
 }
 
 void loop(){
-//  toggleLED();
-//  int pos;
-//  pos = Dxl.readWord(J_ID, PRESENT_POS); // Read present position
-//  SerialUSB.print("Present Position: ");
-//  SerialUSB.println(pos);
-
-//  delay(1000);
-//  Dxl.writeWord(1, 30, 0);
-//  delay(1000);
-//  Dxl.writeWord(1, 30, 99);
 
   if (command==4) {
     i = Dxl.readWord(servo,address);
     SerialUSB.println(i);
-    command=0;      
+    command=0;
+    toggleLED();
   } else if (command==2) {
     b = Dxl.readByte(servo,address);
     SerialUSB.println(b);
-    command=0;    
+    command=0;
+    toggleLED();
   }
 
 }
