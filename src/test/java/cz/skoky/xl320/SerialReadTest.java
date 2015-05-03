@@ -29,6 +29,29 @@ public class SerialReadTest {
     }
 
     @Test
+    public void testSetAndCheck() throws SerialPortException, InterruptedException {
+        byte[] buf1 = new byte[]{3, 1, 30, 2, 47};
+        byte[] buf2 = new byte[]{3, 1, 30, 0, 99};
+        byte[] buf3 = new byte[]{2, 1, 4, 0, 0};
+        USBPort port = new USBPort("/dev/ttyACM0");
+        port.openPort();
+
+        port.writeData(buf1);
+        port.readResponse();
+        Thread.sleep(1000);
+
+        port.writeData(buf3);
+        port.readResponse();
+        Thread.sleep(1000);
+
+//        port.writeData(buf2);
+//        port.readResponse();
+//        Thread.sleep(1000);
+
+        port.closePort();
+    }
+
+    @Test
     public void test2() {
         ByteBuffer bb = ByteBuffer.allocate(2);
         bb.putShort((short) 559);
