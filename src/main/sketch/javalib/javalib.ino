@@ -15,8 +15,8 @@ int i;
 void setup() {
   // setup communication to servos, speed 1Mb
   Dxl.begin(3);
-  // Dxl.jointMode(1);
- Dxl.wheelMode(1); 
+  Dxl.jointMode(1);
+// Dxl.wheelMode(1); 
 
   SerialUSB.attachInterrupt(usbInterrupt);
   pinMode(BOARD_LED_PIN, OUTPUT);  //toggleLED_Pin_Out
@@ -42,14 +42,16 @@ void usbInterrupt(byte* buffer, byte nCount) {
   switch (buffer[0]) {
   case 1:  // write byte
     Dxl.writeByte(servo, address, buffer[3]);
+    SerialUSB.println(buffer[3]);
     break;
   case 2:  // read byte
     b = Dxl.readByte(servo,address);
     SerialUSB.println(b);
     break;
   case 3:  // write word
-    i = word(buffer[3]);  // FIXME
+    i = buffer[3];  // FIXME
     Dxl.writeWord(servo, address, i);      
+    SerialUSB.println(i);
     break;
   case 4:  // read word
     i = Dxl.readWord(servo,address);
@@ -69,7 +71,12 @@ void loop(){
 //  pos = Dxl.readWord(J_ID, PRESENT_POS); // Read present position
 //  SerialUSB.print("Present Position: ");
 //  SerialUSB.println(pos);
+
   delay(1000);
+//  Dxl.writeWord(1, 30, 0);
+//  delay(1000);
+//  Dxl.writeWord(1, 30, 99);
+  
 }
 
 
