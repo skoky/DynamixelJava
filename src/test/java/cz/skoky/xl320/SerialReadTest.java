@@ -3,6 +3,7 @@ package cz.skoky.xl320;
 import jssc.SerialPortException;
 import org.junit.Test;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 /**
@@ -11,18 +12,26 @@ import java.util.Arrays;
 public class SerialReadTest {
 
     @Test
-    public void testSerialReading() throws SerialPortException, InterruptedException {
-        byte[] buf = new byte[]{4,1,2,0x54,0};
+    public void testLeftRight() throws SerialPortException, InterruptedException {
+        byte[] buf1 = new byte[]{3, 1, 30, 2, 47};
+        byte[] buf2 = new byte[]{3, 1, 30, 0, 99};
         USBPort port = new USBPort("/dev/ttyACM0");
         port.openPort();
-        // port.writeData(buf);
-        while(true) {
-            Thread.sleep(3000);
-            port.writeData(buf);
-            Integer response = port.readResponse(7);
-            System.out.println("Response:" + response);
 
-        }
-        // port.closePort();
+        Thread.sleep(1000);
+        port.writeData(buf1);
+        port.readResponse();
+        Thread.sleep(1000);
+        port.writeData(buf2);
+        port.readResponse();
+
+        port.closePort();
+    }
+
+    @Test
+    public void test2() {
+        ByteBuffer bb = ByteBuffer.allocate(2);
+        bb.putShort((short) 559);
+        System.out.println("Array:" + Arrays.toString(bb.array()));
     }
 }
