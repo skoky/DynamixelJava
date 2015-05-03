@@ -18,16 +18,43 @@ import static junit.framework.TestCase.assertEquals;
 public class SerialReadTest {
 
     private USBPort port;
+    private boolean portOpen;
 
     @Before
     public void setUp() throws SerialPortException {
         port = new USBPort("/dev/ttyACM0");
-        port.openPort();
+        portOpen = port.openPort();
     }
 
     @After
     public void close() {
-        port.closePort();
+        if (portOpen)
+            port.closePort();
+    }
+
+    @Test
+    public void testHWErrorStatus() throws SerialPortException, InterruptedException {
+        byte[] buf1 = new byte[]{2, 1, 50, 0, 0};
+
+
+        port.writeData(buf1);
+        Thread.sleep(200);
+        assertEquals("0", port.readResponse());
+
+
+    }
+
+    @Test
+    public void testISMoving() throws SerialPortException, InterruptedException {
+        byte[] buf1 = new byte[]{2, 1, 49, 0, 0};
+
+
+        port.writeData(buf1);
+        Thread.sleep(20);
+        assertEquals("0",port.readResponse());
+
+
+
     }
 
     @Test
