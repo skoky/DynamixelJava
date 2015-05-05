@@ -34,7 +34,7 @@ public class SerialReadTest {
 
     @Test
     public void testHWErrorStatus() throws SerialPortException, InterruptedException {
-        byte[] buf1 = new byte[]{2, 1, 50, 0, 0};
+        byte[] buf1 = new byte[]{2, 1, 18, 0, 0};
 
 
         port.writeData(buf1);
@@ -45,15 +45,21 @@ public class SerialReadTest {
     }
 
     @Test
+    public void testCleanOverload() throws SerialPortException, InterruptedException {
+        byte[] buf1 = new byte[]{3, 1, 15, 0, 0};
+
+        port.writeData(buf1);
+        Thread.sleep(200);
+        assertEquals("0", port.readResponse());
+    }
+
+    @Test
     public void testISMoving() throws SerialPortException, InterruptedException {
         byte[] buf1 = new byte[]{2, 1, 49, 0, 0};
-
 
         port.writeData(buf1);
         Thread.sleep(20);
         assertEquals("0",port.readResponse());
-
-
 
     }
 
