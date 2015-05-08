@@ -1,13 +1,10 @@
 package cz.skoky.xl320;
 
-import jssc.SerialPortException;
-import junit.framework.Assert;
+import cz.skoky.xl320.port.SerialPortException;
+import cz.skoky.xl320.port.USBPort;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -21,7 +18,7 @@ public class SerialReadTest {
     private boolean portOpen;
 
     @Before
-    public void setUp() throws SerialPortException {
+    public void setUp()  {
         port = new USBPort("/dev/ttyACM0");
         portOpen = port.openPort();
     }
