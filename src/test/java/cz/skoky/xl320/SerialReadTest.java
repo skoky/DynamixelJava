@@ -1,7 +1,7 @@
 package cz.skoky.xl320;
 
-import cz.skoky.xl320.port.SerialPortException;
-import cz.skoky.xl320.port.USBPort;
+import com.skoky.dynamixel.port.SerialPortException;
+import com.skoky.dynamixel.port.USBPort;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

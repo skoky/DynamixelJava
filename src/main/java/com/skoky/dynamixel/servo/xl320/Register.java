@@ -1,4 +1,4 @@
-package cz.skoky.xl320.keys;
+package com.skoky.dynamixel.servo.xl320;
 
 /**
  * List of registers with addresses nd limits. Based on e-manual http://support.robotis.com/en/product/dynamixel/xl-series/xl-320.htm

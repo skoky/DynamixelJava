@@ -1,4 +1,4 @@
-package cz.skoky.xl320.port;
+package com.skoky.dynamixel.port;
 
 import java.util.List;
 
