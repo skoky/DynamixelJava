@@ -1,4 +1,4 @@
-package cz.skoky.xl320.keys;
+package com.skoky.dynamixel.servo.xl320;
 
 /**
  * Created by skokan on 29.4.15.
@@ -13,13 +13,8 @@ public enum LedColor {
     GREEN(2),
     RED(1);
 
-    private final int bit;
 
-    LedColor(int bit) {
-        this.bit=bit;
-    }
+    LedColor(int i) {
 
-    public int getNumber() {
-        return bit;
     }
 }

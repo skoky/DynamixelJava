@@ -1,4 +1,4 @@
-package cz.skoky.xl320.port;
+package com.skoky.dynamixel.port;
 
 import com.sun.jna.Platform;
 
@@ -14,7 +14,7 @@ public class USBPort {
 
     public static void main(String [] args) {
         if (Platform.isLinux()) {
-            new PortLinux();
+            new PortLinux().open("/dev/ttyACM0");
         }
     }
 

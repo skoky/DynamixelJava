@@ -12,12 +12,14 @@ public class PacketV1Test {
     @Test
     public void testPing() {
         byte[] ping = new PacketV1().buildPing();
-        Assert.assertArrayEquals(ping,new byte[]{0,0,0,0,0});
+        Assert.assertArrayEquals(new byte[]{(byte) 0xFF, (byte) 0xFE,2,1,(byte) 254},ping);
     }
     @Test
     public void testWriteDate() {
-        byte[] write = new PacketV1().buildWriteDate(1,0xc,0x64,0xaa);
+        byte[] write = new PacketV1().buildWriteDate(1, 0xc, 0x64, 0xaa);
         Assert.assertArrayEquals(new byte[]{(byte) 0xff,1,5,3,0xC,0x64, (byte) 0xaa, (byte) 0xDC},write);
 
     }
+
+
 }
