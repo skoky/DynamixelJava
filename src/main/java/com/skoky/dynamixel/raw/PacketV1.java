@@ -3,7 +3,7 @@ package com.skoky.dynamixel.raw;
 /**
  * Created by skokan on 7.5.15.
  */
-public class PacketV1 implements Packet {
+public class PacketV1 extends PacketCommon implements Packet {
     @Override
     public byte[] buildPing() {
         int[] buffer = new int[6];
@@ -14,14 +14,6 @@ public class PacketV1 implements Packet {
         buffer[4]=0x1;          // PING
         buffer[5] = crc(buffer);    // CRC
         return toByteArray(buffer);
-    }
-
-    private byte[] toByteArray(int[] buffer) {
-        byte[] x = new byte[buffer.length];
-        for(int i=0; i<buffer.length;i++) {
-            x[i]= (byte) buffer[i];
-        }
-        return x;
     }
 
     @Override
