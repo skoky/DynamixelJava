@@ -1,8 +1,8 @@
 package com.skoky.dynamixel.port;
 
+import com.skoky.dynamixel.raw.Packet;
 import jtermios.*;
 
-import java.util.Arrays;
 import java.util.List;
 
 import static jtermios.JTermios.*;
@@ -11,9 +11,7 @@ import static jtermios.JTermios.*;
  */
 public class PortLinux implements SerialPort {
 
-    @Override
-    public void open(String portName) {
-        System.out.println("Port list:" + Arrays.toString(JTermios.getPortList().toArray()));
+    PortLinux(String portName) {
         int fd = JTermios.open(portName, O_RDWR | O_NOCTTY | O_NONBLOCK);
         if (fd == -1)
             throw new RuntimeException("Unale to open port "+portName);
@@ -47,7 +45,8 @@ public class PortLinux implements SerialPort {
     }
 
     @Override
-    public List<String> getPortsList() {
-        return JTermios.getPortList();
+    public byte[] sendAndReceive(Packet p) {
+        return new byte[0];
     }
+
 }

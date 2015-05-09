@@ -1,7 +1,7 @@
 package cz.skoky.xl320;
 
 import com.skoky.dynamixel.port.SerialPortException;
-import com.skoky.dynamixel.port.USBPort;
+import com.skoky.dynamixel.port.SerialPortFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,12 +14,12 @@ import static junit.framework.TestCase.assertEquals;
  */
 public class SerialReadTest {
 
-    private USBPort port;
+    private SerialPortFactory port;
     private boolean portOpen;
 
     @Before
     public void setUp()  {
-        port = new USBPort("/dev/ttyACM0");
+        port = new SerialPortFactory();
         portOpen = port.openPort();
     }
 

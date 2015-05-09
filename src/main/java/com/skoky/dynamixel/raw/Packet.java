@@ -7,4 +7,6 @@ public interface Packet {
 
     byte[] buildPing();
     byte[] buildWriteDate(int servoId, int... params);
+
+    void parse(byte[] p);
 }

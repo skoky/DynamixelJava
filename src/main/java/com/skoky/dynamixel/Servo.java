@@ -1,4 +1,4 @@
-package com.skoky.dynamixel.servo;
+package com.skoky.dynamixel;
 
 /**
  * Created by skoky on 5.5.15.

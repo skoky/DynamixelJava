@@ -5,16 +5,13 @@ import com.sun.jna.Platform;
 /**
  * Created by skokan on 29.4.15.
  */
-public class USBPort {
+public class SerialPortFactory {
 
 
-    public USBPort(String s) {
-
-    }
 
     public static void main(String [] args) {
         if (Platform.isLinux()) {
-            new PortLinux().open("/dev/ttyACM0");
+            new PortLinux("/dev/ttyACM0");
         }
     }
 
@@ -32,5 +29,16 @@ public class USBPort {
     public String readResponse() {
 
         return null;
+    }
+
+    public static SerialPort getFirst() {
+        if (Platform.isLinux()) {
+//            PortLinux.getPortsList().get(0);
+//            return new PortLinux(PortLinux.getPortsList().get(0));
+            return null;
+        }
+
+        throw new IllegalStateException("Platform not supported");
+
     }
 }
