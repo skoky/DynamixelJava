@@ -10,23 +10,40 @@ public class PacketV2 extends PacketCommon implements  Packet {
 
     @Override
     public byte[] buildPing() {
-        int[] buffer = new int[9];
+        int[] buffer = new int[10];
         buffer[0] = 0xFF;
         buffer[1] = 0xFF;
         buffer[2] = 0xFD;
         buffer[3] = 0;
-        buffer[4] = 3;    // length L
-        buffer[5] = 0;    // length H
-        buffer[6] = 0x01;    // PING
+        buffer[4] = 0xFE;   // broadcast
+        buffer[5] = 3;    // length L
+        buffer[6] = 0;    // length H
+        buffer[7] = 0x01;    // PING
         int crc = crc16(buffer,buffer.length-2);
-        buffer[7]=(byte) crc;           // CRC L
-        buffer[8]=(byte)(crc>>8);       // CRC H
+        buffer[8]=(byte) crc;           // CRC L
+        buffer[9]=(byte)(crc>>8);       // CRC H
         return toByteArray(buffer);
     }
 
     @Override
     public byte[] buildWriteDate(int servoId, int... params) {
-        return new byte[0];
+        int[] buffer = new int[10+params.length];
+        buffer[0] = 0xFF;
+        buffer[1] = 0xFF;
+        buffer[2] = 0xFD;
+        buffer[3] = 0;
+        buffer[4] = servoId;
+        buffer[5] = 5;    // length L
+        buffer[6] = 0;    // length H
+        buffer[7] = 0x03;    // WRITE
+        for(int i=0;i<params.length;i++) {
+            buffer[8+i] = params[i];
+        }
+        int crc = crc16(buffer,buffer.length-2);
+        buffer[buffer.length-2]=(byte) crc;           // CRC L
+        buffer[buffer.length-1]=(byte)(crc>>8);       // CRC H
+        return toByteArray(buffer);
+
     }
 
     @Override
