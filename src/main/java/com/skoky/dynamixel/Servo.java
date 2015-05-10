@@ -5,5 +5,9 @@ package com.skoky.dynamixel;
  */
 public interface Servo {
 
-    public String getPresentPosition();
+    public int getPresentPosition();
+
+    int getModelNumber();
+
+    int getAllRegisters();
 }

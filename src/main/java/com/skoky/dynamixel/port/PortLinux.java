@@ -3,6 +3,7 @@ package com.skoky.dynamixel.port;
 import jtermios.*;
 import org.apache.commons.codec.binary.Hex;
 
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 import static jtermios.JTermios.*;
@@ -12,8 +13,10 @@ import static jtermios.JTermios.*;
 public class PortLinux implements SerialPort {
 
     private final int fd;
+    private final String portName;
 
     PortLinux(String portName) {
+        this.portName = portName;
         fd = JTermios.open(portName, O_RDWR | O_NOCTTY | O_NONBLOCK);
         if (fd == -1)
             throw new RuntimeException("Unale to open port "+portName);
@@ -47,18 +50,31 @@ public class PortLinux implements SerialPort {
     }
 
     private byte[] buffer = new byte[1024];
+    private ByteBuffer buffer2 = ByteBuffer.allocate(1024);
     @Override
     public byte[] sendAndReceive(byte[] data) {
         int result = JTermios.write(fd, data, data.length);
-        System.out.println("Writing :"+ Hex.encodeHexString(data) + " size:"+result);
+        System.out.println("Writing :" + Hex.encodeHexString(data) + " size:" + result);
+        if (result==-1) throw new IllegalStateException("Serial port not useful. Port:"+portName);
         try {
-            Thread.sleep(1000);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        result = JTermios.read(fd,buffer,buffer.length);
-        System.out.println("Read result:"+result);
-        return Arrays.copyOfRange(buffer,0,result);
+        buffer2.rewind();
+        while(true) {
+            result = JTermios.read(fd, buffer, buffer.length);
+            if (result>0) {
+                buffer2.put(buffer,0,result);
+            } else break;
+        }
+        int size = buffer2.position();
+        byte[] resultB=new byte[size];
+        buffer2.rewind();
+        buffer2.get(resultB, 0, size);
+        System.out.println("Read result size:" + size);
+        System.out.println("Received:"+Hex.encodeHexString(resultB));
+        return resultB;
     }
 
 }

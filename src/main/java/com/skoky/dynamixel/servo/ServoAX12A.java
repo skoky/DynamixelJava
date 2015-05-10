@@ -7,7 +7,17 @@ import com.skoky.dynamixel.Servo;
  */
 public class ServoAX12A implements Servo {
     @Override
-    public String getPresentPosition() {
-        return null;
+    public int getPresentPosition() {
+        return 0;
+    }
+
+    @Override
+    public int getModelNumber() {
+        return 0;
+    }
+
+    @Override
+    public int getAllRegisters() {
+        return 0;
     }
 }

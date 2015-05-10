@@ -1,11 +1,10 @@
 package com.skoky.dynamixel.script;
 
-import com.skoky.dynamixel.port.SerialPort;
+import com.skoky.dynamixel.Servo;
+import com.skoky.dynamixel.controller.OpenCM;
 import com.skoky.dynamixel.port.SerialPortFactory;
-import com.skoky.dynamixel.raw.PacketV2;
-import org.apache.commons.codec.binary.Hex;
+import com.skoky.dynamixel.servo.ServoXL320;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -15,16 +14,17 @@ public class PingV2Script {
 
     public static void main(String[] args) {
 
-        SerialPort port = SerialPortFactory.get("/dev/ttyACM0");
-        byte[] ping = new PacketV2().buildPing();
-        byte[] pingResponse = port.sendAndReceive(ping);
-        System.out.println("Response:"+ Hex.encodeHexString(pingResponse));
-        List<PacketV2.Data> responses = new PacketV2().parse(pingResponse);
-        for(PacketV2.Data d : responses) {
-            System.out.println(d.toString());
-        }
 
-        port.close();
+        OpenCM controller = new OpenCM(SerialPortFactory.get("/dev/ttyACM0"), OpenCM.Protocols.V2);
+
+//        List<Servo> servos = controller.listServos();
+
+//        Servo servo = servos.get(0);
+//        servo.getPresentPosition();
+        Servo servo = new ServoXL320(2,controller);
+        servo.getAllRegisters();
+        servo.getModelNumber();
+
 
     }
 }
