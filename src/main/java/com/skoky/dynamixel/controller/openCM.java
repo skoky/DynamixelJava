@@ -21,9 +21,9 @@ public class openCM implements Controller {
 
         SerialPort port = SerialPortFactory.getFirst();
 
-        byte[] response = port.sendAndReceive(p);
+   //     byte[] response = port.sendAndReceive(p);
 
-        p.parse(response);
+//        p.parse(response);
 
         return  null;
     }

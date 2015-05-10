@@ -1,6 +1,8 @@
 package com.skoky.dynamixel.raw;
 
-import java.util.zip.Checksum;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by skoky on 9.5.15.
@@ -47,8 +49,43 @@ public class PacketV2 extends PacketCommon implements  Packet {
     }
 
     @Override
-    public void parse(byte[] p) {
+    public List<Data> parse(byte[] data) {
 
+        List<Data> results = new ArrayList<Data>();
+        int offset=0;
+
+        while(true) {
+            if (data[0+offset]!=(byte)0xFF || data[1+offset] != (byte)0xFF ||
+                    data[2+offset] != (byte)0xFD || data[3+offset] != 0) break; //throw new IllegalArgumentException("Invalid packet header");
+            TYPES type = TYPES.getByNumber(data[7]);
+            Data result = new Data(type);
+            result.servoId = data[4+offset];
+            int length = data[5+offset];
+            length += data[6+offset] * 256;
+            short crc = data[5 + length + offset];
+            crc += data[6 + length + offset] * 256;
+            int crc2 = Short.toUnsignedInt(crc);
+            int[] forCRC = toIntArray(Arrays.copyOfRange(data, offset, offset + 5 + length));
+            int calculatedCRC = crc16(forCRC, 5 + length);
+            if (crc2 != calculatedCRC) throw new IllegalStateException("CRC does not match");
+
+            result.params = new int[length - 3];
+            for (int i = 0; i < length - 3; i++) {
+                result.params[i] = Byte.toUnsignedInt(data[6 + i + offset]);
+            }
+            results.add(result);
+            if (data.length<=6+length+offset+1)
+                break;
+            offset += 5 + length + offset+2;
+        }
+        return results;
+    }
+
+    private int[] toIntArray(byte[] data) {
+        int[] x = new int[data.length];
+        for(int i=0;i<data.length;i++)
+            x[i]=data[i];
+        return x;
     }
 
     private int[] crc_table = new int[]{
@@ -99,5 +136,42 @@ public class PacketV2 extends PacketCommon implements  Packet {
         return crc;
     }
 
+    public static enum TYPES{
+        PING(1),
+        STATUS(0x55),
+        UNKNOWN(0xFF);
 
+        private final int typeId;
+
+        TYPES(int typeId) {
+            this.typeId=typeId;
+        }
+
+        public static TYPES getByNumber(byte id) {
+            for(TYPES t : values()) {
+                if (t.typeId==id) return t;
+            }
+            return UNKNOWN;
+        }
+    }
+
+    public class Data {
+        public final TYPES type;
+        public int servoId;
+        public int[] params;
+
+        public Data(TYPES type) {
+            this.type=type;
+        }
+
+        @Override
+        public String toString() {
+            return "Data{" +
+                    "type=" + type +
+                    ", servoId=" + servoId +
+                    ", params=" + Arrays.toString(params) +
+                    '}';
+        }
+    }
 }
+

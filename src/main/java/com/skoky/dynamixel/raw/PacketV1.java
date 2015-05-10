@@ -1,5 +1,7 @@
 package com.skoky.dynamixel.raw;
 
+import java.util.List;
+
 /**
  * Created by skokan on 7.5.15.
  */
@@ -32,10 +34,10 @@ public class PacketV1 extends PacketCommon implements Packet {
     }
 
     @Override
-    public void parse(byte[] p) {
+    public List<PacketV2.Data> parse(byte[] p) {
         if (p[0]!=0xFF) throw new IllegalArgumentException("Not starting with 0xFF");
 
-
+        return null;
     }
 
 

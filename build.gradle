@@ -12,6 +12,7 @@ repositories {
 
 dependencies {
     compile 'com.sparetimelabs:purejavacomm:0.0.22'
+    compile 'commons-codec:commons-codec:1.10'
     testCompile 'junit:junit:4.11'
     testCompile 'org.mockito:mockito-all:1.10.19'
 }
