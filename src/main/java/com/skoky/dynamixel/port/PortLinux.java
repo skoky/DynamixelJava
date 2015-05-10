@@ -1,9 +1,9 @@
 package com.skoky.dynamixel.port;
 
-import com.skoky.dynamixel.raw.Packet;
 import jtermios.*;
+import org.apache.commons.codec.binary.Hex;
 
-import java.util.List;
+import java.util.Arrays;
 
 import static jtermios.JTermios.*;
 /**
@@ -11,8 +11,10 @@ import static jtermios.JTermios.*;
  */
 public class PortLinux implements SerialPort {
 
+    private final int fd;
+
     PortLinux(String portName) {
-        int fd = JTermios.open(portName, O_RDWR | O_NOCTTY | O_NONBLOCK);
+        fd = JTermios.open(portName, O_RDWR | O_NOCTTY | O_NONBLOCK);
         if (fd == -1)
             throw new RuntimeException("Unale to open port "+portName);
         fcntl(fd, F_SETFL, 0);
@@ -41,12 +43,22 @@ public class PortLinux implements SerialPort {
 
     @Override
     public void close() {
-
+        JTermios.close(fd);
     }
 
+    private byte[] buffer = new byte[1024];
     @Override
-    public byte[] sendAndReceive(Packet p) {
-        return new byte[0];
+    public byte[] sendAndReceive(byte[] data) {
+        int result = JTermios.write(fd, data, data.length);
+        System.out.println("Writing :"+ Hex.encodeHexString(data) + " size:"+result);
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        result = JTermios.read(fd,buffer,buffer.length);
+        System.out.println("Read result:"+result);
+        return Arrays.copyOfRange(buffer,0,result);
     }
 
 }

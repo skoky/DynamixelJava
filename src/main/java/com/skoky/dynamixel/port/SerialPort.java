@@ -15,5 +15,5 @@ public interface SerialPort {
     void close();
 
 
-    byte[] sendAndReceive(Packet p);
+    byte[] sendAndReceive(byte[] p);
 }

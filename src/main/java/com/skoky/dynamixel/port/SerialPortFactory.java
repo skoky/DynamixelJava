@@ -9,10 +9,11 @@ public class SerialPortFactory {
 
 
 
-    public static void main(String [] args) {
+    public static SerialPort get(String portName) {
         if (Platform.isLinux()) {
-            new PortLinux("/dev/ttyACM0");
+            return new PortLinux(portName);
         }
+        throw new IllegalStateException("Platform not supported");
     }
 
     public boolean openPort() {
@@ -33,9 +34,7 @@ public class SerialPortFactory {
 
     public static SerialPort getFirst() {
         if (Platform.isLinux()) {
-//            PortLinux.getPortsList().get(0);
-//            return new PortLinux(PortLinux.getPortsList().get(0));
-            return null;
+            return new PortLinux(SerialPort.getPortsList().get(0));
         }
 
         throw new IllegalStateException("Platform not supported");
