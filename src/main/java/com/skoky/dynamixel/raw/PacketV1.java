@@ -19,7 +19,12 @@ public class PacketV1 extends PacketCommon implements Packet {
     }
 
     @Override
-    public byte[] buildWriteDate(int servoId, int... params) {
+    public byte[] buildPing(int servoId) {
+        return new byte[0];
+    }
+
+    @Override
+    public byte[] buildWriteData(int servoId, int... params) {
         int[] buffer = new int[6+params.length];
         buffer[0]= 0xFF; //header
         buffer[1]= 0xFF; //header
@@ -31,6 +36,11 @@ public class PacketV1 extends PacketCommon implements Packet {
         }
         buffer[5+params.length] = crc(buffer,params);    // CRC
         return toByteArray(buffer);
+    }
+
+    @Override
+    public byte[] buildReadData(int servoId, int... params) {
+        return new byte[0];
     }
 
     @Override

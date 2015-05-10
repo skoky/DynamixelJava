@@ -8,7 +8,10 @@ import java.util.List;
 public interface Packet {
 
     byte[] buildPing();
-    byte[] buildWriteDate(int servoId, int... params);
+    byte[] buildPing(int servoId);
+    byte[] buildWriteData(int servoId, int... params);
+    byte[] buildReadData(int servoId, int... params);
 
     List<PacketV2.Data> parse(byte[] p);
+
 }

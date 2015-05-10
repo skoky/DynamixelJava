@@ -50,4 +50,10 @@ data_blk = [0xFF, 0xFF, 0xFD, 0, 1, 5, 0, 3, 0xC, 0x64, 0xaa]
 
 print crc16(data_blk, 11, 0)
 
+data_blk = [0xff, 0xff, 0xfd, 00, 01, 07, 00, 02, 00, 00, 02, 00]
 
+print crc16(data_blk, 12, 0)
+
+data_blk = [0xff, 0xff, 0xfd, 00, 02, 05, 00, 0x55, 0x80, 0x5e] #9da8]
+
+print crc16(data_blk, 10, 0)

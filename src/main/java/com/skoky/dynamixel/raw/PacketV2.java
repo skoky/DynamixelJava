@@ -1,5 +1,8 @@
 package com.skoky.dynamixel.raw;
 
+import org.apache.commons.codec.binary.Hex;
+
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -12,12 +15,17 @@ public class PacketV2 extends PacketCommon implements  Packet {
 
     @Override
     public byte[] buildPing() {
+        return buildPing(0xFE);
+    }
+
+    @Override
+    public byte[] buildPing(int servoId) {
         int[] buffer = new int[10];
         buffer[0] = 0xFF;
         buffer[1] = 0xFF;
         buffer[2] = 0xFD;
         buffer[3] = 0;
-        buffer[4] = 0xFE;   // broadcast
+        buffer[4] = servoId;   // 0xFE = broadcast all
         buffer[5] = 3;    // length L
         buffer[6] = 0;    // length H
         buffer[7] = 0x01;    // PING
@@ -28,14 +36,14 @@ public class PacketV2 extends PacketCommon implements  Packet {
     }
 
     @Override
-    public byte[] buildWriteDate(int servoId, int... params) {
+    public byte[] buildWriteData(int servoId, int... params) {
         int[] buffer = new int[10+params.length];
         buffer[0] = 0xFF;
         buffer[1] = 0xFF;
         buffer[2] = 0xFD;
         buffer[3] = 0;
         buffer[4] = servoId;
-        buffer[5] = 5;    // length L
+        buffer[5] = 3+params.length;    // length L
         buffer[6] = 0;    // length H
         buffer[7] = 0x03;    // WRITE
         for(int i=0;i<params.length;i++) {
@@ -48,12 +56,35 @@ public class PacketV2 extends PacketCommon implements  Packet {
 
     }
 
+
+    @Override
+    public byte[] buildReadData(int servoId, int... params) {
+        int[] buffer = new int[10+params.length];
+        buffer[0] = 0xFF;
+        buffer[1] = 0xFF;
+        buffer[2] = 0xFD;
+        buffer[3] = 0;
+        buffer[4] = servoId;
+        buffer[5] = 3+params.length;    // length L
+        buffer[6] = 0;    // length H
+        buffer[7] = 0x02;    // READ
+        for(int i=0;i<params.length;i++) {
+            buffer[8+i] = params[i];
+        }
+        int crc = crc16(buffer,buffer.length-2);
+        buffer[buffer.length-2]=(byte) crc;           // CRC L
+        buffer[buffer.length-1]=(byte)(crc>>8);       // CRC H
+        return toByteArray(buffer);
+    }
+
+
     @Override
     public List<Data> parse(byte[] data) {
 
         List<Data> results = new ArrayList<Data>();
         int offset=0;
-
+        System.out.println("To parse:"+ Hex.encodeHexString(data));
+        if (data ==null || data.length==0 ) throw new IllegalStateException("Unable to parse empty array");
         while(true) {
             if (data[0+offset]!=(byte)0xFF || data[1+offset] != (byte)0xFF ||
                     data[2+offset] != (byte)0xFD || data[3+offset] != 0) break; //throw new IllegalArgumentException("Invalid packet header");
@@ -62,16 +93,20 @@ public class PacketV2 extends PacketCommon implements  Packet {
             result.servoId = data[4+offset];
             int length = data[5+offset];
             length += data[6+offset] * 256;
-            short crc = data[5 + length + offset];
-            crc += data[6 + length + offset] * 256;
-            int crc2 = Short.toUnsignedInt(crc);
+            ByteBuffer bb = ByteBuffer.allocate(2);
+            bb.put(data[6 + length + offset]);
+            bb.put(data[5 + length + offset]);
+            int crc3 = Short.toUnsignedInt(bb.getShort(0));
             int[] forCRC = toIntArray(Arrays.copyOfRange(data, offset, offset + 5 + length));
             int calculatedCRC = crc16(forCRC, 5 + length);
-            if (crc2 != calculatedCRC) throw new IllegalStateException("CRC does not match");
+            if (crc3 != calculatedCRC) {
+                // System.out.println("CRC does not match. Calculated:"+Integer.toHexString(calculatedCRC) + " from data:"+crc2 + "CRC3:"+crc3);
+                throw new IllegalStateException("CRC does not match");
+            }
 
             result.params = new int[length - 3];
             for (int i = 0; i < length - 3; i++) {
-                result.params[i] = Byte.toUnsignedInt(data[6 + i + offset]);
+                result.params[i] = Byte.toUnsignedInt(data[8 + i + offset]);
             }
             results.add(result);
             if (data.length<=6+length+offset+1)
@@ -131,47 +166,9 @@ public class PacketV2 extends PacketCommon implements  Packet {
             crc_accum = (short) (((crc_accum << 8) ^ crc_table[i]));
         }
         int crc = Short.toUnsignedInt(crc_accum);
-        System.out.println("CRC is " + crc);
-        System.out.println("CRC is " + Integer.toHexString(crc));
+        System.out.println("Calculated CRC is " + crc + " / Hex " + Integer.toHexString(crc));
         return crc;
     }
 
-    public static enum TYPES{
-        PING(1),
-        STATUS(0x55),
-        UNKNOWN(0xFF);
-
-        private final int typeId;
-
-        TYPES(int typeId) {
-            this.typeId=typeId;
-        }
-
-        public static TYPES getByNumber(byte id) {
-            for(TYPES t : values()) {
-                if (t.typeId==id) return t;
-            }
-            return UNKNOWN;
-        }
-    }
-
-    public class Data {
-        public final TYPES type;
-        public int servoId;
-        public int[] params;
-
-        public Data(TYPES type) {
-            this.type=type;
-        }
-
-        @Override
-        public String toString() {
-            return "Data{" +
-                    "type=" + type +
-                    ", servoId=" + servoId +
-                    ", params=" + Arrays.toString(params) +
-                    '}';
-        }
-    }
 }
 
