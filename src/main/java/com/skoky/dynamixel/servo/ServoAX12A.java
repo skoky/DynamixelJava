@@ -17,7 +17,12 @@ public class ServoAX12A implements Servo {
     }
 
     @Override
-    public int getAllRegisters() {
+    public int getFirmwareVersion() {
+        return 0;
+    }
+
+    @Override
+    public int getCWAngleLimit() {
         return 0;
     }
 }

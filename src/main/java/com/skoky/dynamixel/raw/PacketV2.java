@@ -104,9 +104,12 @@ public class PacketV2 extends PacketCommon implements  Packet {
                 throw new IllegalStateException("CRC does not match");
             }
 
-            result.params = new int[length - 3];
+            result.params = new int[length - 4];
             for (int i = 0; i < length - 3; i++) {
-                result.params[i] = Byte.toUnsignedInt(data[8 + i + offset]);
+                if (i==0) // error
+                    result.error= Byte.toUnsignedInt(data[8 + offset]);
+                else
+                    result.params[i-1] = Byte.toUnsignedInt(data[8 + i + offset]);
             }
             results.add(result);
             if (data.length<=6+length+offset+1)
