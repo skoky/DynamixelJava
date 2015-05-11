@@ -5,8 +5,6 @@ import com.skoky.dynamixel.controller.OpenCM;
 import com.skoky.dynamixel.port.SerialPortFactory;
 import com.skoky.dynamixel.servo.ServoXL320;
 
-import java.util.List;
-
 /**
  * Created by skoky on 9.5.15.
  */
@@ -22,9 +20,14 @@ public class PingV2Script {
 //        Servo servo = servos.get(0);
 //        servo.getPresentPosition();
         Servo servo = new ServoXL320(2,controller);
-        servo.getAllRegisters();
-        servo.getModelNumber();
+        System.out.println("Firmware:"+servo.getFirmwareVersion());
+        int model = servo.getModelNumber();
+        System.out.println("Model number:" + model);
 
+        int position = servo.getPresentPosition();
+        System.out.println("Position:" + position);
+
+        servo.getCWAngleLimit();
 
     }
 }

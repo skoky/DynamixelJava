@@ -9,5 +9,8 @@ public interface Servo {
 
     int getModelNumber();
 
-    int getAllRegisters();
+    int getFirmwareVersion();
+
+
+    int getCWAngleLimit();
 }

@@ -22,6 +22,7 @@ public class PacketCommon {
         public int servoId;
         public int[] params;
         public int presentPosition;
+        public int error;
 
         public Data(TYPES type) {
             this.type=type;
