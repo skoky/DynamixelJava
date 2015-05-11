@@ -25,4 +25,9 @@ public class ServoAX12A implements Servo {
     public int getCWAngleLimit() {
         return 0;
     }
+
+    @Override
+    public void setCWLimit(int i) {
+
+    }
 }

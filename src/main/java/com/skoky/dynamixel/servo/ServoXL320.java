@@ -3,9 +3,9 @@ package com.skoky.dynamixel.servo;
 import com.skoky.dynamixel.Controller;
 import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.raw.Packet;
-import com.skoky.dynamixel.raw.PacketCommon;
 import com.skoky.dynamixel.raw.PacketV2;
 import com.skoky.dynamixel.servo.xl320.Register;
+import org.apache.commons.codec.binary.Hex;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -17,6 +17,7 @@ import java.util.List;
 public class ServoXL320 implements Servo {
     private final int servoId;
     private final Controller controller;
+    private Register twoByteRegister;
 
     public ServoXL320(int servoId, Controller controller) {
         this.servoId=servoId;
@@ -41,6 +42,11 @@ public class ServoXL320 implements Servo {
     @Override
     public int getCWAngleLimit() {
         return getOneByteAnswer(Register.CW_ANGLE_LIMIT);
+    }
+
+    @Override
+    public void setCWLimit(int limit) {
+        setTwoByteRegister(Register.CW_ANGLE_LIMIT,limit);
     }
 
     private int getOneByteAnswer(Register r) {
@@ -91,5 +97,23 @@ public class ServoXL320 implements Servo {
         b.put((byte) d.get(0).params[1]);
         return b.getShort(0);
 
+    }
+
+    public void setTwoByteRegister(Register r, int limit) {
+        if (limit<r.getMin() || limit>r.getMax()) {
+            System.out.println("Value over limits");
+            return;
+        }
+        if (r.isReadOnly()) {
+            System.out.println("Register is read-only!");
+        }
+        int rLow = r.getAddress();
+        int rHigh = r.getAddress()  /256;
+        Packet p = new PacketV2();
+        byte[] posCommand = p.buildWriteData(servoId, rLow, rHigh, 12,0);
+        byte[] response = controller.getPort().sendAndReceive(posCommand);
+        System.out.println("Write Response:"+ Hex.encodeHexString(response));
+        List<PacketV2.Data> d = p.parse(response);
+        System.out.println("Write Response:"+d.get(0));
     }
 }

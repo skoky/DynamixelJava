@@ -71,4 +71,16 @@ public enum Register {
     public int getSize() {
         return size;
     }
+
+    public int getMin() {
+        return min;
+    }
+
+    public int getMax() {
+        return max;
+    }
+
+    public boolean isReadOnly() {
+        return readonly;
+    }
 }
