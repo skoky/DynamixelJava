@@ -21,7 +21,6 @@ public class PacketCommon {
         public final TYPES type;
         public int servoId;
         public int[] params;
-        public int presentPosition;
         public int error;
 
         public Data(TYPES type) {
@@ -33,6 +32,7 @@ public class PacketCommon {
             return "Data{" +
                     "type=" + type +
                     ", servoId=" + servoId +
+                    ", error="+error +
                     ", params=" + Arrays.toString(params) +
                     '}';
         }

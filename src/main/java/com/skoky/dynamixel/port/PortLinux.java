@@ -57,7 +57,7 @@ public class PortLinux implements SerialPort {
         System.out.println("Writing :" + Hex.encodeHexString(data) + " size:" + result);
         if (result==-1) throw new IllegalStateException("Serial port not useful. Port:"+portName);
         try {
-            Thread.sleep(200);
+            Thread.sleep(20);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
