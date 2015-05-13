@@ -3,6 +3,11 @@ package com.skoky.dynamixel.servo;
 import com.skoky.dynamixel.Controller;
 import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.controller.OpenCM;
+import com.skoky.dynamixel.raw.PacketCommon;
+import com.skoky.dynamixel.raw.PacketV1;
+import com.skoky.dynamixel.raw.PacketV2;
+
+import java.util.List;
 
 /**
  * Created by skoky on 5.5.15.
@@ -23,6 +28,10 @@ public class ServoAX12A implements Servo {
 
     @Override
     public int getModelNumber() {
+        byte[] packet = new PacketV1().buildReadData(servoId, 0, 1);
+        byte[] response = controller.getPort().sendAndReceive(packet);
+        List<PacketV2.Data> r = new PacketV1().parse(response);
+        System.out.println(r.get(0).toString());
         return 0;
     }
 

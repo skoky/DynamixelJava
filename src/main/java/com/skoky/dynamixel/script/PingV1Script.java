@@ -19,10 +19,9 @@ public class PingV1Script {
         OpenCM controller = new OpenCM(SerialPortFactory.get("/dev/ttyUSB0"), OpenCM.Protocols.V1);
         System.out.println("Servos:" + Arrays.toString(controller.listServos().toArray()));
 
-//        List<Servo> servos = controller.listServos();
-//
-////        Servo servo = servos.get(0);
-////        servo.getPresentPosition();
+       List<Servo> servos = controller.listServos();
+        Servo servo = servos.get(0);
+        servo.getModelNumber();
 //        Servo servo = new ServoXL320(2,controller);
 //        System.out.println("Firmware:"+servo.getFirmwareVersion());
 //        int model = servo.getModelNumber();
