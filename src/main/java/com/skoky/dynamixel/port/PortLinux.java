@@ -68,6 +68,7 @@ public class PortLinux implements SerialPort {
         while(true) {
             result = JTermios.read(fd, buffer, buffer.length);
             if (result>0) {
+//                System.out.println("Adding:"+result + " -> " + Hex.encodeHexString(buffer));
                 buffer2.put(buffer,0,result);
             } else break;
         }
