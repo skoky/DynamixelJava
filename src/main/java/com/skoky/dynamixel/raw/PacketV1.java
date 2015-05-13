@@ -1,5 +1,6 @@
 package com.skoky.dynamixel.raw;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,7 +21,14 @@ public class PacketV1 extends PacketCommon implements Packet {
 
     @Override
     public byte[] buildPing(int servoId) {
-        return new byte[0];
+        int[] buffer = new int[6];
+        buffer[0]= 0xFF; //header
+        buffer[1]= 0xFF; //header
+        buffer[2]= servoId; //servo ID
+        buffer[3]=2;            // length
+        buffer[4]=0x1;          // PING
+        buffer[5] = crc(buffer);    // CRC
+        return toByteArray(buffer);
     }
 
     @Override
@@ -45,11 +53,23 @@ public class PacketV1 extends PacketCommon implements Packet {
 
     @Override
     public List<PacketV2.Data> parse(byte[] p) {
-        if (p[0]!=0xFF) throw new IllegalArgumentException("Not starting with 0xFF");
-
-        return null;
+        if (p==null || p.length==0) return null;
+        if (p[0]!=(byte)0xFF || p[1]!=(byte)0xFF) throw new IllegalArgumentException("Not starting with 0xFF");
+        Data data = new Data(TYPES.PING);
+        data.error = p[4];
+        int length = p[3];
+        data.params = new int[(length-2)];
+        for(int i=5;i<(length-2);i++) {
+            data.params[i-5]=p[i];
+        }
+        data.servoId=p[2];
+        int sum = data.servoId + length;
+        int calcCrc = (255 - ((sum) % 254));
+        if ( p[length+3]!=(byte)calcCrc) System.out.println("CRC not the same!");
+        List list = new ArrayList<Data>();
+        list.add(data);
+        return list;
     }
-
 
     private int crc(int[] buffer, int... params) {
         int sum = buffer[2];
@@ -58,7 +78,7 @@ public class PacketV1 extends PacketCommon implements Packet {
         for(int i=0;i<params.length;i++) {
             sum += params[i];
         }
-        int crc = (255 - ((sum) % 256));
+        int crc = (255 - ((sum) % 254));
         return crc;
 
     }

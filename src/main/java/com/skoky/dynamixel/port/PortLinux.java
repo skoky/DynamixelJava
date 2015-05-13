@@ -36,12 +36,15 @@ public class PortLinux implements SerialPort {
         opts.c_cc[VMIN] = 0;
         opts.c_cc[VTIME] = 10;
 
-        cfsetispeed(opts, B9600);
-        cfsetospeed(opts, B9600);
+//        cfsetispeed(opts, B230400);
+//        cfsetospeed(opts, B230400);
+        setspeed(fd,opts,1000000);
 
         tcsetattr(fd, TCSANOW, opts);
 
         tcflush(fd, TCIOFLUSH);
+
+
     }
 
     @Override
@@ -57,7 +60,7 @@ public class PortLinux implements SerialPort {
         System.out.println("Writing :" + Hex.encodeHexString(data) + " size:" + result);
         if (result==-1) throw new IllegalStateException("Serial port not useful. Port:"+portName);
         try {
-            Thread.sleep(20);
+            Thread.sleep(2);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -77,4 +80,10 @@ public class PortLinux implements SerialPort {
         return resultB;
     }
 
+    @Override
+    public String toString() {
+        return "PortLinux{" +
+                ", portName='" + portName + '\'' +
+                '}';
+    }
 }
