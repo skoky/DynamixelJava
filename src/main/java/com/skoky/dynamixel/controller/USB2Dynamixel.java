@@ -16,14 +16,14 @@ import java.util.List;
 /**
  * Created by skoky on 9.5.15.
  */
-public class OpenCM implements Controller {
+public class USB2Dynamixel implements Controller {
 
     private final Packet packet;
     protected final SerialPort port;
 
-    public OpenCM(SerialPort port) {
-        packet = new PacketV2();
-        this.port = port;
+    public USB2Dynamixel(SerialPort port) {
+        packet = new PacketV1();
+        this.port =port;
     }
 
     @Override
@@ -35,27 +35,21 @@ public class OpenCM implements Controller {
     public List<Servo> listServos() {
 
 //        for (int i=0;i<20;i++) {
-        byte[] ping = packet.buildPing(1);
-        byte[] pingResponse = port.sendAndReceive(ping);
-        System.out.println("Response:" + Hex.encodeHexString(pingResponse));
-        List<PacketV2.Data> responses = packet.parse(pingResponse);
-        List<Servo> servos = new ArrayList<>();
-        if (responses != null)
-            for (PacketV2.Data d : responses) {
+            byte[] ping = packet.buildPing(1);
+            byte[] pingResponse = port.sendAndReceive(ping);
+            System.out.println("Response:" + Hex.encodeHexString(pingResponse));
+            List<PacketV1.Data> responses = packet.parse(pingResponse);
+            List<Servo> servos = new ArrayList<>();
+            if (responses!=null)
+            for (PacketV1.Data d : responses) {
                 System.out.println(d.toString());
-
-                if (d.params[1] == 85 && d.params[2] == 128)
-                    servos.add(new ServoXL320(d.servoId, this));
+                servos.add(new ServoAX12A(d.servoId,this));
             }
 //        }
 //        port.close();
         return servos;
     }
 
-    public enum Protocols {
-        V1,
-        V2;
-    }
 
     @Override
     public String toString() {

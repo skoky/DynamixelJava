@@ -15,4 +15,6 @@ public interface Servo {
     int getCWAngleLimit();
 
     void setCWLimit(int i);
+
+    void setPresentPosition(int position);
 }
