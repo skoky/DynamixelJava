@@ -52,6 +52,7 @@ public class PacketCommon {
         SYNC_WRITE(0x83),
         BULK_READ(0x92),
         BULK_WRITE(0x93),
+        NONE_V1(0),
         UNKNOWN(0xFF);
 
 

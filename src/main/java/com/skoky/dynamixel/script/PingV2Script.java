@@ -15,7 +15,7 @@ public class PingV2Script {
     public static void main(String[] args) {
 
 
-        OpenCM controller = new OpenCM(SerialPortFactory.get("/dev/ttyUSB0"), OpenCM.Protocols.V2);
+        OpenCM controller = new OpenCM(SerialPortFactory.get("/dev/ttyUSB0"));
 
         List<Servo> servos = controller.listServos();
 

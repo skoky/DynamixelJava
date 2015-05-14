@@ -49,6 +49,11 @@ public class ServoXL320 implements Servo {
         setTwoByteRegister(Register.CW_ANGLE_LIMIT,limit);
     }
 
+    @Override
+    public void setPresentPosition(int position) {
+
+    }
+
     private int getOneByteAnswer(Register r) {
         Packet p = new PacketV2();
         int rLow = r.getAddress();

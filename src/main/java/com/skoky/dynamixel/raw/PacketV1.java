@@ -37,7 +37,7 @@ public class PacketV1 extends PacketCommon implements Packet {
         buffer[0]= 0xFF; //header
         buffer[1]= 0xFF; //header
         buffer[2]= servoId; //servo ID
-        buffer[3]= 0x05;            // length
+        buffer[3]= params.length+2;        // length
         buffer[4]= 0x3;          // WRITE_DATA
         for(int i=0;i<params.length;i++) {
             buffer[5+i] = params[i];
@@ -65,17 +65,19 @@ public class PacketV1 extends PacketCommon implements Packet {
     public List<PacketV2.Data> parse(byte[] p) {
         if (p==null || p.length==0) return null;
         if (p[0]!=(byte)0xFF || p[1]!=(byte)0xFF) throw new IllegalArgumentException("Not starting with 0xFF");
-        Data data = new Data(TYPES.UNKNOWN);
+        Data data = new Data(TYPES.NONE_V1);    // packet name not defined in V1
+        data.servoId=p[2];
         data.error = p[4];
         int length = p[3];
+        int sum = data.servoId + length + data.error;
         data.params = new int[(length-2)];
         for(int i=5;i<(5+length-2);i++) {
-            data.params[i-5]=p[i];
+            data.params[i-5]=Byte.toUnsignedInt(p[i]);
+            sum+=data.params[i-5];
         }
-        data.servoId=p[2];
-        int sum = data.servoId + length;
         int calcCrc = (255 - ((sum) % 254));
-        if ( p[length+3]!=(byte)calcCrc) System.out.println("CRC not the same!");
+        if ( Byte.toUnsignedInt(p[length+3])!=calcCrc)
+            System.out.println("CRC not the same!");
         List list = new ArrayList<Data>();
         list.add(data);
         return list;
@@ -88,7 +90,7 @@ public class PacketV1 extends PacketCommon implements Packet {
         for(int i=0;i<params.length;i++) {
             sum += params[i];
         }
-        int crc = (255 - ((sum) % 254));
+        int crc = (255 - ((sum) % 256));
         return crc;
 
     }
