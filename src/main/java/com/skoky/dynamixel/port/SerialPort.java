@@ -1,5 +1,6 @@
 package com.skoky.dynamixel.port;
 
+import com.skoky.dynamixel.err.SerialLinkError;
 import com.skoky.dynamixel.raw.Packet;
 import jtermios.JTermios;
 
@@ -15,5 +16,5 @@ public interface SerialPort {
     void close();
 
 
-    byte[] sendAndReceive(byte[] p);
+    byte[] sendAndReceive(byte[] p) throws SerialLinkError;
 }

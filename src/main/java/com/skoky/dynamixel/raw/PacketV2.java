@@ -6,12 +6,15 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by skoky on 9.5.15.
  */
 public class PacketV2 extends PacketCommon implements  Packet {
 
+    Logger log = Logger.getGlobal();
 
     @Override
     public byte[] buildPing() {
@@ -83,7 +86,7 @@ public class PacketV2 extends PacketCommon implements  Packet {
 
         List<Data> results = new ArrayList<Data>();
         int offset=0;
-        System.out.println("To parse:"+ Hex.encodeHexString(data));
+        log.fine("To parse:"+ Hex.encodeHexString(data));
         if (data ==null || data.length==0 ) throw new IllegalStateException("Unable to parse empty array");
         while(true) {
             if (data[0+offset]!=(byte)0xFF || data[1+offset] != (byte)0xFF ||
@@ -100,7 +103,7 @@ public class PacketV2 extends PacketCommon implements  Packet {
             int[] forCRC = toIntArray(Arrays.copyOfRange(data, offset, offset + 5 + length));
             int calculatedCRC = crc16(forCRC, 5 + length);
             if (crc3 != calculatedCRC) {
-                // System.out.println("CRC does not match. Calculated:"+Integer.toHexString(calculatedCRC) + " from data:"+crc2 + "CRC3:"+crc3);
+                log.severe("CRC does not match. Calculated:"+Integer.toHexString(calculatedCRC) + " from data:"+crc3 + "CRC3:"+crc3);
                 throw new IllegalStateException("CRC does not match");
             }
 
@@ -169,7 +172,7 @@ public class PacketV2 extends PacketCommon implements  Packet {
             crc_accum = (short) (((crc_accum << 8) ^ crc_table[i]));
         }
         int crc = Short.toUnsignedInt(crc_accum);
-        System.out.println("Calculated CRC is " + crc + " / Hex " + Integer.toHexString(crc));
+        log.fine("Calculated CRC is " + crc + " / Hex " + Integer.toHexString(crc));
         return crc;
     }
 

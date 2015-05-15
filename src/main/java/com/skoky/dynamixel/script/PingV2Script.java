@@ -2,6 +2,7 @@ package com.skoky.dynamixel.script;
 
 import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.controller.OpenCM;
+import com.skoky.dynamixel.err.SerialLinkError;
 import com.skoky.dynamixel.port.SerialPortFactory;
 import com.skoky.dynamixel.servo.ServoXL320;
 
@@ -12,7 +13,7 @@ import java.util.List;
  */
 public class PingV2Script {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SerialLinkError {
 
 
         OpenCM controller = new OpenCM(SerialPortFactory.get("/dev/ttyUSB0"));
@@ -29,7 +30,7 @@ public class PingV2Script {
         int position = servo.getPresentPosition();
         System.out.println("Position:" + position);
 
-            servo.setCWLimit(100);
+//            servo.setCWLimit(100);
         System.out.println("CW Limit:" + servo.getCWAngleLimit());
 
 

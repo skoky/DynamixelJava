@@ -1,5 +1,6 @@
 package com.skoky.dynamixel.port;
 
+import com.skoky.dynamixel.err.SerialLinkError;
 import com.sun.jna.Platform;
 
 /**
@@ -8,8 +9,7 @@ import com.sun.jna.Platform;
 public class SerialPortFactory {
 
 
-
-    public static SerialPort get(String portName) {
+    public static SerialPort get(String portName) throws SerialLinkError {
         if (Platform.isLinux()) {
             return new PortLinux(portName);
         }
@@ -32,7 +32,7 @@ public class SerialPortFactory {
         return null;
     }
 
-    public static SerialPort getFirst() {
+    public static SerialPort getFirst() throws SerialLinkError {
         if (Platform.isLinux()) {
             return new PortLinux(SerialPort.getPortsList().get(0));
         }

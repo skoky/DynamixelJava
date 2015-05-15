@@ -1,5 +1,7 @@
 package com.skoky.dynamixel.raw;
 
+import com.skoky.dynamixel.err.ResponseParsingException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +64,7 @@ public class PacketV1 extends PacketCommon implements Packet {
     }
 
     @Override
-    public List<PacketV2.Data> parse(byte[] p) {
+    public List<PacketV2.Data> parse(byte[] p) throws ResponseParsingException {
         if (p==null || p.length==0) return null;
         if (p[0]!=(byte)0xFF || p[1]!=(byte)0xFF) throw new IllegalArgumentException("Not starting with 0xFF");
         Data data = new Data(TYPES.NONE_V1);    // packet name not defined in V1
@@ -77,7 +79,7 @@ public class PacketV1 extends PacketCommon implements Packet {
         }
         int calcCrc = (255 - ((sum) % 254));
         if ( Byte.toUnsignedInt(p[length+3])!=calcCrc)
-            System.out.println("CRC not the same!");
+            throw new ResponseParsingException("CRC not the same!");
         List list = new ArrayList<Data>();
         list.add(data);
         return list;

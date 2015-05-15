@@ -1,10 +1,12 @@
 package com.skoky.dynamixel.port;
 
+import com.skoky.dynamixel.err.SerialLinkError;
 import jtermios.*;
 import org.apache.commons.codec.binary.Hex;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.logging.Logger;
 
 import static jtermios.JTermios.*;
 /**
@@ -12,14 +14,15 @@ import static jtermios.JTermios.*;
  */
 public class PortLinux implements SerialPort {
 
+    Logger log = Logger.getGlobal();
     private final int fd;
     private final String portName;
 
-    PortLinux(String portName) {
+    PortLinux(String portName) throws SerialLinkError {
         this.portName = portName;
         fd = JTermios.open(portName, O_RDWR | O_NOCTTY | O_NONBLOCK);
         if (fd == -1)
-            throw new RuntimeException("Unale to open port "+portName);
+            throw new SerialLinkError("Unable to open port "+portName);
         fcntl(fd, F_SETFL, 0);
 
         Termios opts = new Termios();
@@ -53,14 +56,14 @@ public class PortLinux implements SerialPort {
     }
 
     private byte[] buffer = new byte[1024];
-    private ByteBuffer buffer2 = ByteBuffer.allocate(1024);
+    private ByteBuffer buffer2 = ByteBuffer.allocate(4096);
     @Override
-    public byte[] sendAndReceive(byte[] data) {
+    public byte[] sendAndReceive(byte[] data) throws SerialLinkError {
         int result = JTermios.write(fd, data, data.length);
-        System.out.println("Writing :" + Hex.encodeHexString(data) + " size:" + result);
-        if (result==-1) throw new IllegalStateException("Serial port not useful. Port:"+portName);
+        log.fine("Serial writing:" + Hex.encodeHexString(data) + " size:" + result);
+        if (result==-1) throw new SerialLinkError("Serial port not useful. Port:"+portName);
         try {
-            Thread.sleep(2);
+            Thread.sleep(2);        // TODO remove later
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -76,8 +79,7 @@ public class PortLinux implements SerialPort {
         byte[] resultB=new byte[size];
         buffer2.rewind();
         buffer2.get(resultB, 0, size);
-        System.out.println("Read result size:" + size);
-        System.out.println("Received:"+Hex.encodeHexString(resultB));
+        log.fine("Serial read (" + size + "): " + Hex.encodeHexString(resultB));
         return resultB;
     }
 
