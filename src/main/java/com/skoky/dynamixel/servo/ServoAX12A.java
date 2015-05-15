@@ -41,6 +41,7 @@ public class ServoAX12A extends ServoCommon implements Servo {
 
     @Override
     public int getModelNumber() {
+<<<<<<< HEAD
         try {
             return sendReadCommand(Register.MODEL_NUMBER);
         } catch (ResponseParsingException e) {
@@ -57,10 +58,24 @@ public class ServoAX12A extends ServoCommon implements Servo {
 
     @Override
     public int getFirmwareVersion() {
+=======
+        return sendReadCommand(Register.MODEL_NUMBER);
+    }
+
+
+    @Override
+    public int getFirmwareVersion() {
         return 0;
     }
 
     @Override
+    public int getCWAngleLimit() {
+>>>>>>> origin/develop
+        return 0;
+    }
+
+    @Override
+<<<<<<< HEAD
     PacketCommon.Data getOneByteAnswer(com.skoky.dynamixel.servo.xl320.Register firmwareVersion) throws ResponseParsingException {
         return 0;
     }
@@ -71,6 +86,20 @@ public class ServoAX12A extends ServoCommon implements Servo {
     }
 
     private void sendWriteCommand(Register register, int value) {
+=======
+    public void setCWLimit(int i) {
+
+    }
+
+    @Override
+    public void setPresentPosition(int position) {
+        sendWriteCommand(Register.GOAL_POSITION, position);
+    }
+
+    private void sendWriteCommand(Register register, int value) {
+        if (value > register.getMax() || value < register.getMin())
+            System.out.println("!Value out of range");
+>>>>>>> origin/develop
         byte[] packet=null;
         if (register.getSize() == 2) {
             packet = new PacketV1().buildWriteData(servoId, register.getAddress(), value%255, value/255);

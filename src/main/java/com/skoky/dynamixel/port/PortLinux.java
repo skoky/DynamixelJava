@@ -1,9 +1,9 @@
 package com.skoky.dynamixel.port;
 
+
 import com.skoky.dynamixel.err.SerialLinkError;
 import jtermios.*;
 import org.apache.commons.codec.binary.Hex;
-
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.logging.Logger;
