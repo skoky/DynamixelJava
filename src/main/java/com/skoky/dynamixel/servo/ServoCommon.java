@@ -16,7 +16,7 @@ public abstract class ServoCommon implements Servo {
 
     @Override
     public int getPresentSpeed() {
-        two
+        return 0;
     }
 
     @Override

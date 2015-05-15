@@ -39,6 +39,11 @@ public class ServoXL320 extends ServoCommon implements Servo {
         }
     }
 
+    @Override
+    protected void setTwoByteRegister(Register cwAngleLimit, int limit) throws ResponseParsingException {
+
+    }
+
     PacketCommon.Data sendReadCommand(Register r) throws SerialLinkError, ResponseParsingException {
         Packet p = new PacketV2();
         int rLow = r.getAddress();
