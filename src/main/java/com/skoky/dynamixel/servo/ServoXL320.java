@@ -313,8 +313,8 @@ public class ServoXL320 extends ServoCommon implements Servo {
     }
 
     @Override
-    public void setGoalPosition(int position) {
-
+    public boolean setGoalPosition(int position) {
+        return false;
     }
 
     @Override

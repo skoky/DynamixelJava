@@ -280,13 +280,16 @@ public class ServoAX12A extends ServoCommon implements Servo {
     }
 
     @Override
-    public void setGoalPosition(int position) {
+    public boolean setGoalPosition(int position) {
         try {
             sendWriteCommand(Register.GOAL_POSITION,position);
+            return true;
         } catch (ResponseParsingException e) {
-            e.printStackTrace();
+            log.severe(e.getMessage());
+            return false;
         } catch (ErrorResponseException e) {
-            e.printStackTrace();
+            log.severe(e.getMessage());
+            return false;
         }
     }
 

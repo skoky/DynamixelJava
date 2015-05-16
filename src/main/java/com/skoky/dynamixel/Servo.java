@@ -56,7 +56,7 @@ public interface Servo {
 
     // TODO compliance margins
 
-    void setGoalPosition(int position);
+    boolean setGoalPosition(int position);
     int getGoalPosition();
 
     void setMovingSpeed(int speed);
