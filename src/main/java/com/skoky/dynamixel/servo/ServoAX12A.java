@@ -106,6 +106,35 @@ public class ServoAX12A extends ServoCommon implements Servo {
     }
 
     @Override
+    public boolean isWheelMode() {
+        int cw = getCWAngleLimit();
+        int ccw = getCCWAngleLimit();
+        if (cw == 0 && ccw == 0 ) return true;
+        else return false;
+    }
+
+    @Override
+    public boolean isJointMode() {
+        int cw = getCWAngleLimit();
+        int ccw = getCCWAngleLimit();
+        if (cw == 0 && ccw == 0 ) return false;
+        else return true;
+
+    }
+
+    @Override
+    public void setWheelMode() {
+        setCCWAngleLimit(0);
+        setCCWAngleLimit(0);
+    }
+
+    @Override
+    public void setJointMode() {
+        setCCWAngleLimit(1023);
+        setCCWAngleLimit(1023);
+    }
+
+    @Override
     public int getModelNumber() {
         try {
             return sendReadCommand(Register.MODEL_NUMBER);
@@ -137,12 +166,19 @@ public class ServoAX12A extends ServoCommon implements Servo {
 
     @Override
     public Baudrate getBaudRate() {
-        return null;
+        int value = 0;
+        try {
+            value = sendReadCommand(Register.BAUD_RATE);
+        } catch (ResponseParsingException e) {
+            log.severe("Unable to parse baudrate response");
+            return Baudrate.UNKNOWN;
+        }
+        return Baudrate.getById(value);
     }
 
     @Override
-    public void setBaudrate(Baudrate b) {
-
+    public boolean setBaudrate(Baudrate b) {
+        return sendWriteCommandNoEx(Register.BAUD_RATE,b.getId());
     }
 
     @Override
@@ -156,8 +192,8 @@ public class ServoAX12A extends ServoCommon implements Servo {
     }
 
     @Override
-    public void setCWAngleLimit(int limit) {
-
+    public boolean setCWAngleLimit(int limit) {
+        return sendWriteCommandNoEx(Register.CW_ANGLE_LIMIT,limit);
     }
 
     @Override
@@ -177,7 +213,13 @@ public class ServoAX12A extends ServoCommon implements Servo {
 
     @Override
     public int getCCWAngleLimit() {
-        return 0;
+        try {
+            return sendReadCommand(Register.CCW_ANGLE_LIMIT);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+
+        }
     }
 
     @Override
@@ -288,7 +330,7 @@ public class ServoAX12A extends ServoCommon implements Servo {
             log.severe(e.getMessage());
             return false;
         } catch (ErrorResponseException e) {
-            log.severe(e.getMessage());
+            log.severe(e.getErrorName());
             return false;
         }
     }
@@ -351,7 +393,7 @@ public class ServoAX12A extends ServoCommon implements Servo {
         try {
             data = new PacketV1().parseFirst(response);
         } catch (ErrorResponseException e) {
-            log.severe(e.toString());
+            log.severe(e.getErrorName());
             return -1;
         }
         return data.result;
@@ -365,7 +407,7 @@ public class ServoAX12A extends ServoCommon implements Servo {
             log.severe(e.getMessage());
             return false;
         } catch (ErrorResponseException e) {
-            log.severe(e.getMessage());
+            log.severe(e.getErrorName());
             return false;
         }
     }

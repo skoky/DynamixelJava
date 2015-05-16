@@ -16,12 +16,12 @@ public interface Servo {
     void setId(int newId);
 
     Baudrate getBaudRate();
-    void setBaudrate(Baudrate b);
+    boolean setBaudrate(Baudrate b);
 
     void setReturnDelayTime(int time);
     int getReturnDelayTime();
 
-    void setCWAngleLimit(int limit);
+    boolean setCWAngleLimit(int limit);
     int getCWAngleLimit();
 
     void setCCWAngleLimit(int limit);
@@ -79,4 +79,8 @@ public interface Servo {
     void setPunch(int punch);
     int getPunch();
 
+    boolean isWheelMode();
+    boolean isJointMode();
+    void setWheelMode();
+    void setJointMode();
 }

@@ -93,7 +93,7 @@ public class PacketV1 extends PacketCommon implements Packet {
     public Data parseFirst(byte[] p) throws ResponseParsingException, ErrorResponseException {
         List<Data> d = parse(p);
         Data one = d.get(0);
-        if (one.error!=0) throw new ErrorResponseException(one.error,"Error response from servo");
+        if (one.error!=0) throw new ErrorResponseException(one.error);
         return one;
     }
 

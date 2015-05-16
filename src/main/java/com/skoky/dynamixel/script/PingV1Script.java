@@ -6,7 +6,9 @@ import com.skoky.dynamixel.controller.OpenCM;
 import com.skoky.dynamixel.controller.USB2Dynamixel;
 import com.skoky.dynamixel.err.ResponseParsingException;
 import com.skoky.dynamixel.err.SerialLinkError;
+import com.skoky.dynamixel.port.PortLinux;
 import com.skoky.dynamixel.port.SerialPortFactory;
+import com.skoky.dynamixel.servo.Baudrate;
 import com.skoky.dynamixel.servo.ServoAX12A;
 import com.skoky.dynamixel.servo.ServoXL320;
 
@@ -22,6 +24,8 @@ public class PingV1Script {
 
 
         Controller controller = new USB2Dynamixel(SerialPortFactory.get("/dev/ttyUSB0"));
+        PortLinux p = (PortLinux) controller.getPort();
+        p.setRecordFile("src/test/resources/audit.log");
         System.out.println("Servos:" + Arrays.toString(controller.listServos().toArray()));
 
         List<Servo> servos = controller.listServos();
@@ -45,6 +49,21 @@ public class PingV1Script {
         position = servo.getPresentPosition();
         System.out.println("Position:" + position);
 
+        servo.getBaudRate();
+        servo.setBaudrate(Baudrate.B1000000);
+
+        System.out.println("CW limit:" + servo.getCWAngleLimit());
+        servo.setCWAngleLimit(1000);
+
+        System.out.println("CCW limit:" + servo.getCCWAngleLimit());
+        servo.setCCWAngleLimit(1000);
+
+        System.out.println("Wheel mode:" + servo.isWheelMode());
+        System.out.println("Joint mode:"+servo.isJointMode());
+        servo.setWheelMode();
+        servo.setJointMode();
+
         servo.setLedOn(false);
+        controller.getPort().close();
     }
 }

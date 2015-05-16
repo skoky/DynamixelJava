@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 /**
  * Created by skokan on 14.5.15.
  */
-public abstract class ServoCommon implements Servo {
+public abstract class ServoCommon {
 
     protected Logger log = Logger.getGlobal();
 

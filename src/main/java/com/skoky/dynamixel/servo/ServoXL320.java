@@ -5,7 +5,6 @@ import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.err.ResponseParsingException;
 import com.skoky.dynamixel.err.SerialLinkError;
 import com.skoky.dynamixel.raw.Data;
-import com.skoky.dynamixel.raw.PacketCommon;
 import com.skoky.dynamixel.servo.xl320.Register;
 
 import java.util.logging.Logger;
@@ -144,6 +143,26 @@ public class ServoXL320 extends ServoCommon implements Servo {
     }
 
     @Override
+    public boolean isWheelMode() {
+        return false;
+    }
+
+    @Override
+    public boolean isJointMode() {
+        return false;
+    }
+
+    @Override
+    public void setWheelMode() {
+
+    }
+
+    @Override
+    public void setJointMode() {
+
+    }
+
+    @Override
     public int getModelNumber() {
         try {
             Data data = sendReadCommand(Register.MODEL_NUMBER);
@@ -182,8 +201,9 @@ public class ServoXL320 extends ServoCommon implements Servo {
     }
 
     @Override
-    public void setBaudrate(Baudrate b) {
+    public boolean setBaudrate(Baudrate b) {
 
+        return false;
     }
 
     @Override
@@ -197,8 +217,9 @@ public class ServoXL320 extends ServoCommon implements Servo {
     }
 
     @Override
-    public void setCWAngleLimit(int limit) {
+    public boolean setCWAngleLimit(int limit) {
 
+        return false;
     }
 
     @Override
