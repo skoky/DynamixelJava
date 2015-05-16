@@ -27,7 +27,7 @@ public class PortLinux implements SerialPort {
 
     public void setRecordFile(String logFileName) throws SerialLinkError {
         try {
-            f = new FileWriter(logFileName);
+            f = new FileWriter(logFileName,true);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -54,8 +54,8 @@ public class PortLinux implements SerialPort {
         opts.c_cc[VMIN] = 0;
         opts.c_cc[VTIME] = 10;
 
-//        cfsetispeed(opts, B230400);
-//        cfsetospeed(opts, B230400);
+        cfsetispeed(opts, B230400);
+        cfsetospeed(opts, B230400);
         setspeed(fd, opts, 1000000);
 
         tcsetattr(fd, TCSANOW, opts);
@@ -84,6 +84,11 @@ public class PortLinux implements SerialPort {
         int result = JTermios.write(fd, data, data.length);
         log.fine("Serial writing:" + Hex.encodeHexString(data) + " size:" + result);
         if (result == -1) throw new SerialLinkError("Serial port not useful. Port:" + portName);
+        try {
+            Thread.sleep(20);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         buffer2.rewind();
         while (true) {
             result = JTermios.read(fd, buffer, buffer.length);
@@ -91,6 +96,7 @@ public class PortLinux implements SerialPort {
 //                System.out.println("Adding:"+result + " -> " + Hex.encodeHexString(buffer));
                 buffer2.put(buffer, 0, result);
             } else break;
+            if (result<buffer.length) break;
         }
         log.fine("Response time (ms):"+ (System.currentTimeMillis()-start));
         int size = buffer2.position();

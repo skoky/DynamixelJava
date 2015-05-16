@@ -34,7 +34,7 @@ public class USB2Dynamixel implements Controller {
         this.port = port;
         LogManager.getLogManager().reset();
         ConsoleHandler handler = new ConsoleHandler();
-        handler.setLevel(Level.ALL);
+        handler.setLevel(Level.WARNING);
         log.setLevel(Level.ALL);
         log.addHandler(handler);
     }
@@ -47,8 +47,8 @@ public class USB2Dynamixel implements Controller {
     @Override
     public List<Servo> listServos() {
 
-        byte[] ping = packet.buildPing(1);
-        byte[] pingResponse;
+        byte[] ping = packet.buildPing();
+        byte[] pingResponse = new byte[0];
         List<Servo> servos = new ArrayList<>();
         try {
             pingResponse = port.sendAndReceive(ping);
@@ -61,7 +61,10 @@ public class USB2Dynamixel implements Controller {
         } catch (SerialLinkError serialLinkError) {
             serialLinkError.printStackTrace();
         } catch (ResponseParsingException e) {
-            e.printStackTrace();
+            if (pingResponse[0]==0)
+                log.info("No servo connected to bus");
+            else
+                e.printStackTrace();
         }
         return servos;
     }

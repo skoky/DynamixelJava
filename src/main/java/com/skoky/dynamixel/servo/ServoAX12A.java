@@ -156,12 +156,17 @@ public class ServoAX12A extends ServoCommon implements Servo {
 
     @Override
     public int getId() {
-        return 0;
+        try {
+            return sendReadCommand(Register.ID);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
     }
 
     @Override
-    public void setId(int newId) {
-
+    public boolean setId(int newId) {
+        return sendWriteCommandNoEx(Register.ID,newId);
     }
 
     @Override
@@ -341,13 +346,18 @@ public class ServoAX12A extends ServoCommon implements Servo {
     }
 
     @Override
-    public void setMovingSpeed(int speed) {
-
+    public boolean setMovingSpeed(int speed) {
+        return sendWriteCommandNoEx(Register.MOVING_SPEED,speed);
     }
 
     @Override
     public int getMovingSpeed() {
-        return 0;
+        try {
+            return sendReadCommand(Register.MOVING_SPEED);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
     }
 
     @Override

@@ -29,9 +29,11 @@ public class PingV1Script {
         System.out.println("Servos:" + Arrays.toString(controller.listServos().toArray()));
 
         List<Servo> servos = controller.listServos();
+        if (servos.size()==0) return;
         Servo servo = servos.get(0);
         int model = servo.getModelNumber();
         System.out.println("Model number:" + model);
+        System.out.println("Baudrate:" + servo.getBaudRate());
 
         servo.setLedOn(true);
 
@@ -42,7 +44,7 @@ public class PingV1Script {
         int position = servo.getPresentPosition();
         System.out.println("Position:" + position);
 
-        boolean isSet = servo.setGoalPosition(position + 200);
+        boolean isSet = servo.setGoalPosition(position+200);
         if (!isSet) servo.setGoalPosition(0);
 
 
@@ -53,7 +55,7 @@ public class PingV1Script {
         servo.setBaudrate(Baudrate.B1000000);
 
         System.out.println("CW limit:" + servo.getCWAngleLimit());
-        servo.setCWAngleLimit(1000);
+        servo.setCWAngleLimit(0);
 
         System.out.println("CCW limit:" + servo.getCCWAngleLimit());
         servo.setCCWAngleLimit(1000);
@@ -62,6 +64,13 @@ public class PingV1Script {
         System.out.println("Joint mode:"+servo.isJointMode());
         servo.setWheelMode();
         servo.setJointMode();
+
+        servo.setMovingSpeed(200);
+        System.out.println("Moving speed:" + servo.getMovingSpeed());
+
+        servo.setId(2);
+        System.out.println("New id:" + servo.getId());
+
 
         servo.setLedOn(false);
         controller.getPort().close();

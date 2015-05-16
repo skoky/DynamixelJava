@@ -191,8 +191,9 @@ public class ServoXL320 extends ServoCommon implements Servo {
     }
 
     @Override
-    public void setId(int newId) {
+    public boolean setId(int newId) {
 
+        return false;
     }
 
     @Override
@@ -344,8 +345,9 @@ public class ServoXL320 extends ServoCommon implements Servo {
     }
 
     @Override
-    public void setMovingSpeed(int speed) {
+    public boolean setMovingSpeed(int speed) {
 
+        return false;
     }
 
     @Override

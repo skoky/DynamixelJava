@@ -13,7 +13,7 @@ public interface Servo {
     int getFirmwareVersion();
 
     int getId();
-    void setId(int newId);
+    boolean setId(int newId);
 
     Baudrate getBaudRate();
     boolean setBaudrate(Baudrate b);
@@ -59,7 +59,7 @@ public interface Servo {
     boolean setGoalPosition(int position);
     int getGoalPosition();
 
-    void setMovingSpeed(int speed);
+    boolean setMovingSpeed(int speed);
     int getMovingSpeed();
 
     void setTorqueLimit(int limit);
