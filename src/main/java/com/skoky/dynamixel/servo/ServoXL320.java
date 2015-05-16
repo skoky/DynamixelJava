@@ -103,7 +103,7 @@ public class ServoXL320 extends ServoCommon implements Servo {
     }
 
     @Override
-    public int getPresentVoltage() {
+    public float getPresentVoltage() {
         return 0;
     }
 
@@ -118,8 +118,8 @@ public class ServoXL320 extends ServoCommon implements Servo {
     }
 
     @Override
-    public int isMoving() {
-        return 0;
+    public Boolean isMoving() {
+        return false;
     }
 
     @Override
@@ -208,8 +208,9 @@ public class ServoXL320 extends ServoCommon implements Servo {
     }
 
     @Override
-    public void setReturnDelayTime(int time) {
+    public boolean setReturnDelayTime(int time) {
 
+        return false;
     }
 
     @Override
@@ -245,8 +246,9 @@ public class ServoXL320 extends ServoCommon implements Servo {
     }
 
     @Override
-    public void setTemperatureLimit(int limit) {
+    public boolean setTemperatureLimit(int limit) {
 
+        return false;
     }
 
     @Override
@@ -255,22 +257,23 @@ public class ServoXL320 extends ServoCommon implements Servo {
     }
 
     @Override
-    public void setLowestLimitVoltage(int limit) {
-
+    public boolean setLowestLimitVoltage(float limit) {
+        return false;
     }
 
     @Override
-    public int getLowestLimitVoltage() {
+    public float getLowestLimitVoltage() {
         return 0;
     }
 
     @Override
-    public void setHighestLimitVoltage(int limit) {
+    public boolean setHighestLimitVoltage(float limit) {
 
+        return false;
     }
 
     @Override
-    public int getHifgestLimitVoltage() {
+    public float getHighestLimitVoltage() {
         return 0;
     }
 
@@ -300,8 +303,8 @@ public class ServoXL320 extends ServoCommon implements Servo {
     }
 
     @Override
-    public boolean getAlarmLed() {
-        return false;
+    public int getAlarmLed() {
+        return -1;
     }
 
     @Override
@@ -356,8 +359,9 @@ public class ServoXL320 extends ServoCommon implements Servo {
     }
 
     @Override
-    public void setTorqueLimit(int limit) {
+    public boolean setTorqueLimit(int limit) {
 
+        return false;
     }
 
     @Override

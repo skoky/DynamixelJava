@@ -18,7 +18,7 @@ public interface Servo {
     Baudrate getBaudRate();
     boolean setBaudrate(Baudrate b);
 
-    void setReturnDelayTime(int time);
+    boolean setReturnDelayTime(int time);
     int getReturnDelayTime();
 
     boolean setCWAngleLimit(int limit);
@@ -27,14 +27,14 @@ public interface Servo {
     void setCCWAngleLimit(int limit);
     int getCCWAngleLimit();
 
-    void setTemperatureLimit(int limit);
+    boolean setTemperatureLimit(int limit);
     int getTemperatureLimit();
 
-    void setLowestLimitVoltage(int limit);
-    int getLowestLimitVoltage();
+    boolean setLowestLimitVoltage(float limit);
+    float getLowestLimitVoltage();
 
-    void setHighestLimitVoltage(int limit);
-    int getHifgestLimitVoltage();
+    boolean setHighestLimitVoltage(float limit);
+    float getHighestLimitVoltage();
 
     boolean setMaxTorque(int torqueLimit);
     int getMaxTorque();
@@ -43,7 +43,7 @@ public interface Servo {
     ReturnLevel getReturnLevel();
 
     void setAlarmLed(boolean onOff);
-    boolean getAlarmLed();
+    int getAlarmLed();
 
     void setAlarmShutdown(int value);
     int getAlarmShutdown();
@@ -62,16 +62,16 @@ public interface Servo {
     boolean setMovingSpeed(int speed);
     int getMovingSpeed();
 
-    void setTorqueLimit(int limit);
+    boolean setTorqueLimit(int limit);
     int getTorqueLimit();
 
     public int getPresentPosition();
     int getPresentSpeed();
     int getPresentLoad();
-    int getPresentVoltage();
+    float getPresentVoltage();
     int getPresentTemperature();
     int getRegistered();
-    int isMoving();
+    Boolean isMoving();
 
     void setEEPROMLock(boolean locked);
     boolean getEEPROMLock();

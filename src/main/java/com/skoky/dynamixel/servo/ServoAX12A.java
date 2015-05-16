@@ -62,17 +62,32 @@ public class ServoAX12A extends ServoCommon implements Servo {
 
     @Override
     public int getPresentLoad() {
-        return 0;
+        try {
+            return sendReadCommand(Register.PRESENT_LOAD);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
     }
 
     @Override
-    public int getPresentVoltage() {
-        return 0;
+    public float getPresentVoltage() {
+        try {
+            return sendReadCommand(Register.PRESENT_VOLTAGE)/10;
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
     }
 
     @Override
     public int getPresentTemperature() {
-        return 0;
+        try {
+            return sendReadCommand(Register.PRESENT_TEMPERATURE);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
     }
 
     @Override
@@ -81,8 +96,16 @@ public class ServoAX12A extends ServoCommon implements Servo {
     }
 
     @Override
-    public int isMoving() {
-        return 0;
+    public Boolean isMoving() {
+        try {
+            int moving = sendReadCommand(Register.MOVING);
+            if (moving==0) return false;
+            else return true;
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return null;
+        }
+
     }
 
     @Override
@@ -187,13 +210,18 @@ public class ServoAX12A extends ServoCommon implements Servo {
     }
 
     @Override
-    public void setReturnDelayTime(int time) {
-
+    public boolean setReturnDelayTime(int time) {
+        return sendWriteCommandNoEx(Register.DELAY_TIME,time);
     }
 
     @Override
     public int getReturnDelayTime() {
-        return 0;
+        try {
+            return sendReadCommand(Register.DELAY_TIME);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
     }
 
     @Override
@@ -228,33 +256,48 @@ public class ServoAX12A extends ServoCommon implements Servo {
     }
 
     @Override
-    public void setTemperatureLimit(int limit) {
-
+    public boolean setTemperatureLimit(int limit) {
+        return sendWriteCommandNoEx(Register.LIMIT_TEMPERATURE,limit);
     }
 
     @Override
     public int getTemperatureLimit() {
-        return 0;
+        try {
+            return sendReadCommand(Register.LIMIT_TEMPERATURE);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
     }
 
     @Override
-    public void setLowestLimitVoltage(int limit) {
-
+    public boolean setLowestLimitVoltage(float limit) {
+        return sendWriteCommandNoEx(Register.LOWER_LIMIT_VOLTAGE, (int) (limit*10));
     }
 
     @Override
-    public int getLowestLimitVoltage() {
-        return 0;
+    public float getLowestLimitVoltage() {
+        try {
+            return sendReadCommand(Register.LOWER_LIMIT_VOLTAGE)/10;
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
     }
 
     @Override
-    public void setHighestLimitVoltage(int limit) {
-
+    public boolean setHighestLimitVoltage(float limit) {
+        return sendWriteCommandNoEx(Register.UPPER_LIMIT_VOLTAGE, (int) (limit*10));
     }
 
     @Override
-    public int getHifgestLimitVoltage() {
-        return 0;
+    public float getHighestLimitVoltage() {
+        try {
+            return sendReadCommand(Register.UPPER_LIMIT_VOLTAGE)/10;
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
     }
 
     @Override
@@ -280,7 +323,15 @@ public class ServoAX12A extends ServoCommon implements Servo {
 
     @Override
     public ReturnLevel getReturnLevel() {
-        return null;
+        int levelId = 0;
+        try {
+            levelId = sendReadCommand(Register.STATUS_RETURN_LEVEL);
+            return ReturnLevel.getById(levelId);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return ReturnLevel.RETUR_LEVEL_UNKNOWN;
+        }
+
     }
 
     @Override
@@ -289,8 +340,13 @@ public class ServoAX12A extends ServoCommon implements Servo {
     }
 
     @Override
-    public boolean getAlarmLed() {
-        return false;
+    public int getAlarmLed() {
+        try {
+            return sendReadCommand(Register.ALARM_LED);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
     }
 
     @Override
@@ -361,13 +417,19 @@ public class ServoAX12A extends ServoCommon implements Servo {
     }
 
     @Override
-    public void setTorqueLimit(int limit) {
+    public boolean setTorqueLimit(int limit) {
+        return sendWriteCommandNoEx(Register.GOAL_TORQUE, limit);
 
     }
 
     @Override
     public int getTorqueLimit() {
-        return 0;
+        try {
+            return sendReadCommand(Register.GOAL_TORQUE);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
     }
 
 //    Data sendReadCommand(Register register) throws ResponseParsingException {
