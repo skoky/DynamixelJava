@@ -5,8 +5,10 @@ import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.controller.USB2Dynamixel;
 import com.skoky.dynamixel.err.SerialLinkError;
 import com.skoky.dynamixel.port.PortLinux;
+import com.skoky.dynamixel.port.SerialPort;
 import com.skoky.dynamixel.port.SerialPortFactory;
 import com.skoky.dynamixel.servo.Baudrate;
+import com.skoky.dynamixel.servo.ServoXL320;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,6 +22,7 @@ public class PingV1Script {
 
 
         Controller controller = new USB2Dynamixel(SerialPortFactory.get("/dev/ttyUSB0"));
+
         PortLinux p = (PortLinux) controller.getPort();
         p.setRecordFile("src/test/resources/audit.log");
         System.out.println("Servos:" + Arrays.toString(controller.listServos().toArray()));
