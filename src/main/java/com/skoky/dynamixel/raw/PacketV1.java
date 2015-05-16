@@ -77,7 +77,8 @@ public class PacketV1 extends PacketCommon implements Packet {
             data.params[i-5]=Byte.toUnsignedInt(p[i]);
             sum+=data.params[i-5];
         }
-        int calcCrc = (255 - ((sum) % 254));
+        int calcCrc = (255 - ((sum) % 256));
+//        calcCrc = crcResponse(p);
         int crc = Byte.toUnsignedInt(p[length+3]);
         if ( crc !=calcCrc)
             throw new ResponseParsingException("CRC not the same! Calculated:"+calcCrc + " expected:" + crc);

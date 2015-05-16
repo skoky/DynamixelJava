@@ -140,4 +140,10 @@ public class PacketV1Test {
 
     }
 
+    @Test
+    public void tstCrc() throws DecoderException, ResponseParsingException {
+        byte[] data = Hex.decodeHex("ffff010400fc03fb".toCharArray());
+        new PacketV1().parse(data);
+    }
+
 }
