@@ -5,6 +5,7 @@ import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.err.ResponseParsingException;
 import com.skoky.dynamixel.err.SerialLinkError;
 import com.skoky.dynamixel.port.SerialPort;
+import com.skoky.dynamixel.raw.Data;
 import com.skoky.dynamixel.raw.Packet;
 import com.skoky.dynamixel.raw.PacketV1;
 import com.skoky.dynamixel.raw.PacketV2;
@@ -14,6 +15,9 @@ import org.apache.commons.codec.binary.Hex;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 /**
@@ -28,6 +32,11 @@ public class USB2Dynamixel implements Controller {
     public USB2Dynamixel(SerialPort port) {
         packet = new PacketV1();
         this.port = port;
+        LogManager.getLogManager().reset();
+        ConsoleHandler handler = new ConsoleHandler();
+        handler.setLevel(Level.ALL);
+        log.setLevel(Level.ALL);
+        log.addHandler(handler);
     }
 
     @Override
@@ -43,9 +52,9 @@ public class USB2Dynamixel implements Controller {
         List<Servo> servos = new ArrayList<>();
         try {
             pingResponse = port.sendAndReceive(ping);
-            List<PacketV1.Data> responses = packet.parse(pingResponse);
+            List<Data> responses = packet.parse(pingResponse);
             if (responses != null)
-                for (PacketV1.Data d : responses) {
+                for (Data d : responses) {
                     System.out.println(d.toString());
                     servos.add(new ServoAX12A(d.servoId, this));
                 }

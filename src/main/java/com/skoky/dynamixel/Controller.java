@@ -1,6 +1,5 @@
 package com.skoky.dynamixel;
 
-import com.skoky.dynamixel.err.ResponseParsingException;
 import com.skoky.dynamixel.port.SerialPort;
 
 import java.util.List;

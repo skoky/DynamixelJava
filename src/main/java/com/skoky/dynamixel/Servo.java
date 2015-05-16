@@ -36,7 +36,7 @@ public interface Servo {
     void setHighestLimitVoltage(int limit);
     int getHifgestLimitVoltage();
 
-    void setMaxTorque(int torqueLimit);
+    boolean setMaxTorque(int torqueLimit);
     int getMaxTorque();
 
     void setReturnLevel(ReturnLevel level);
@@ -51,7 +51,7 @@ public interface Servo {
     void setTorqueEnable(boolean enable);
     boolean getTorqueEnabled();
 
-    void setLedOn(boolean on);
+    boolean setLedOn(boolean on);
     boolean getLedOn();
 
     // TODO compliance margins

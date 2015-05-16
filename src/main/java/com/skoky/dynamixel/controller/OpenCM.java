@@ -5,6 +5,7 @@ import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.err.ResponseParsingException;
 import com.skoky.dynamixel.err.SerialLinkError;
 import com.skoky.dynamixel.port.SerialPort;
+import com.skoky.dynamixel.raw.Data;
 import com.skoky.dynamixel.raw.Packet;
 import com.skoky.dynamixel.raw.PacketV1;
 import com.skoky.dynamixel.raw.PacketV2;
@@ -52,9 +53,9 @@ public class OpenCM implements Controller {
         List<Servo> servos = new ArrayList<>();
         try {
             pingResponse = port.sendAndReceive(ping);
-            List<PacketV2.Data> responses = packet.parse(pingResponse);
+            List<Data> responses = packet.parse(pingResponse);
             if (responses != null)
-                for (PacketV2.Data d : responses) {
+                for (Data d : responses) {
                     log.fine(d.toString());
                     if (d.params[1] == 85 && d.params[2] == 128)
                         servos.add(new ServoXL320(d.servoId, this));

@@ -29,13 +29,20 @@ public class PingV1Script {
         int model = servo.getModelNumber();
         System.out.println("Model number:" + model);
 
-        int position = servo.getPresentPosition();
-        System.out.println("Position:" + position);
+//        servo.setLedOn(true);
 
-//        servo.setPresentPosition(1);
+        servo.setMaxTorque(999);
+        System.out.println("Maxtorque:"+servo.getMaxTorque());
 
-        position = servo.getPresentPosition();
-        System.out.println("Position:" + position);
+//        int position = servo.getPresentPosition();
+//        System.out.println("Position:" + position);
+//
+//        servo.setGoalPosition(200);
 
+
+//        position = servo.getPresentPosition();
+//        System.out.println("Position:" + position);
+
+//        servo.setLedOn(false);
     }
 }

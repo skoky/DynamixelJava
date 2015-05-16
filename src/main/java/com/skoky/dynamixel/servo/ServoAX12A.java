@@ -2,13 +2,13 @@ package com.skoky.dynamixel.servo;
 
 import com.skoky.dynamixel.Controller;
 import com.skoky.dynamixel.Servo;
+import com.skoky.dynamixel.err.ErrorResponseException;
 import com.skoky.dynamixel.err.ResponseParsingException;
-import com.skoky.dynamixel.raw.PacketCommon;
+import com.skoky.dynamixel.raw.Data;
 import com.skoky.dynamixel.raw.PacketV1;
 import com.skoky.dynamixel.servo.ax12a.Register;
-import org.apache.commons.codec.binary.Hex;
 
-import java.util.List;
+
 import java.util.logging.Logger;
 
 /**
@@ -24,12 +24,7 @@ public class ServoAX12A extends ServoCommon implements Servo {
         this.controller=controller;
     }
 
-    @Override
-    PacketCommon.Data sendReadCommand(com.skoky.dynamixel.servo.xl320.Register register) throws ResponseParsingException {
-        return null;
-    }
 
-    @Override
     public int getPresentPosition() {
         try {
             return sendReadCommand(Register.CURRENT_POSITION);
@@ -39,42 +34,12 @@ public class ServoAX12A extends ServoCommon implements Servo {
         }
     }
 
-    @Override
-    protected void setTwoByteRegister(com.skoky.dynamixel.servo.xl320.Register cwAngleLimit, int limit) throws ResponseParsingException {
-
-    }
 
     public void setPresentPosition(int position) {
-        sendWriteCommand(Register.GOAL_POSITION, position);
+        //sendWriteCommand(Register.GOAL_POSITION, position);
     }
 
-    private void sendWriteCommand(Register register, int value) {
-        byte[] packet=null;
-        if (register.getSize() == 2) {
-            packet = new PacketV1().buildWriteData(servoId, register.getAddress(), value%255, value/255);
-        } else if (register.getSize() == 1) {
-            packet = new PacketV1().buildWriteData(servoId, register.getAddress(), value);
-        }
-        byte[] response = controller.getPort().sendAndReceive(packet);
-        System.out.println("Response:" + Hex.encodeHexString(response));
 
-    }
-
-    private int sendReadCommand(Register register) throws ResponseParsingException {
-        byte[] packet = new PacketV1().buildReadData(servoId, register.getAddress(), register.getSize());
-        byte[] response = controller.getPort().sendAndReceive(packet);
-        List<PacketV1.Data> r = new PacketV1().parse(response);
-        if (r==null || r.size()==0)
-            throw new ResponseParsingException("No response data");
-        if (register.getSize()==1) {
-            return r.get(0).params[0];
-        } else if (register.getSize()==2) {
-            int position = r.get(0).params[0];
-            position += r.get(0).params[1]*256;
-            return position;
-        }
-        return 0; // WTF
-    }
 
     @Override
     public String toString() {
@@ -83,4 +48,323 @@ public class ServoAX12A extends ServoCommon implements Servo {
                 ", controller=" + controller +
                 '}';
     }
+
+
+    @Override
+    public int getPresentSpeed() {
+        try {
+            return sendReadCommand(Register.PRESENT_SPEED);
+        } catch (ResponseParsingException e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    @Override
+    public int getPresentLoad() {
+        return 0;
+    }
+
+    @Override
+    public int getPresentVoltage() {
+        return 0;
+    }
+
+    @Override
+    public int getPresentTemperature() {
+        return 0;
+    }
+
+    @Override
+    public int getRegistered() {
+        return 0;
+    }
+
+    @Override
+    public int isMoving() {
+        return 0;
+    }
+
+    @Override
+    public void setEEPROMLock(boolean locked) {
+
+    }
+
+    @Override
+    public boolean getEEPROMLock() {
+        return false;
+    }
+
+    @Override
+    public void setPunch(int punch) {
+
+    }
+
+    @Override
+    public int getPunch() {
+        return 0;
+    }
+
+    @Override
+    public int getModelNumber() {
+        try {
+            return sendReadCommand(Register.MODEL_NUMBER);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
+    }
+
+    @Override
+    public int getFirmwareVersion() {
+        try {
+            return  sendReadCommand(Register.FIRMWARE_VERSION);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
+    }
+
+    @Override
+    public int getId() {
+        return 0;
+    }
+
+    @Override
+    public void setId(int newId) {
+
+    }
+
+    @Override
+    public Baudrate getBaudRate() {
+        return null;
+    }
+
+    @Override
+    public void setBaudrate(Baudrate b) {
+
+    }
+
+    @Override
+    public void setReturnDelayTime(int time) {
+
+    }
+
+    @Override
+    public int getReturnDelayTime() {
+        return 0;
+    }
+
+    @Override
+    public void setCWAngleLimit(int limit) {
+
+    }
+
+    @Override
+    public int getCWAngleLimit() {
+        try {
+            return sendReadCommand(Register.CW_ANGLE_LIMIT);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
+    }
+
+    @Override
+    public void setCCWAngleLimit(int limit) {
+
+    }
+
+    @Override
+    public int getCCWAngleLimit() {
+        return 0;
+    }
+
+    @Override
+    public void setTemperatureLimit(int limit) {
+
+    }
+
+    @Override
+    public int getTemperatureLimit() {
+        return 0;
+    }
+
+    @Override
+    public void setLowestLimitVoltage(int limit) {
+
+    }
+
+    @Override
+    public int getLowestLimitVoltage() {
+        return 0;
+    }
+
+    @Override
+    public void setHighestLimitVoltage(int limit) {
+
+    }
+
+    @Override
+    public int getHifgestLimitVoltage() {
+        return 0;
+    }
+
+    @Override
+    public boolean setMaxTorque(int torqueLimit) {
+        return sendWriteCommandNoEx(Register.MAX_TORQUE,torqueLimit);
+    }
+
+
+    @Override
+    public int getMaxTorque() {
+        try {
+            return sendReadCommand(Register.MAX_TORQUE);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
+    }
+
+    @Override
+    public void setReturnLevel(ReturnLevel level) {
+
+    }
+
+    @Override
+    public ReturnLevel getReturnLevel() {
+        return null;
+    }
+
+    @Override
+    public void setAlarmLed(boolean onOff) {
+
+    }
+
+    @Override
+    public boolean getAlarmLed() {
+        return false;
+    }
+
+    @Override
+    public void setAlarmShutdown(int value) {
+
+    }
+
+    @Override
+    public int getAlarmShutdown() {
+        return 0;
+    }
+
+    @Override
+    public void setTorqueEnable(boolean enable) {
+
+    }
+
+    @Override
+    public boolean getTorqueEnabled() {
+        return false;
+    }
+
+    @Override
+    public boolean setLedOn(boolean on) {
+        if (on)
+            return sendWriteCommandNoEx(Register.LED_ON_OFF,1);
+        else
+            return sendWriteCommandNoEx(Register.LED_ON_OFF,0);
+    }
+
+    @Override
+    public boolean getLedOn() {
+        return false;
+    }
+
+    @Override
+    public void setGoalPosition(int position) {
+        try {
+            sendWriteCommand(Register.GOAL_POSITION,position);
+        } catch (ResponseParsingException e) {
+            e.printStackTrace();
+        } catch (ErrorResponseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public int getGoalPosition() {
+        return 0;
+    }
+
+    @Override
+    public void setMovingSpeed(int speed) {
+
+    }
+
+    @Override
+    public int getMovingSpeed() {
+        return 0;
+    }
+
+    @Override
+    public void setTorqueLimit(int limit) {
+
+    }
+
+    @Override
+    public int getTorqueLimit() {
+        return 0;
+    }
+
+//    Data sendReadCommand(Register register) throws ResponseParsingException {
+//        byte[] packet = new PacketV1().buildReadData(servoId, register.getAddress(), register.getSize());
+//        byte[] response = controller.getPort().sendAndReceive(packet);
+//        Data data = null;
+//        try {
+//            data = new PacketV1().parseFirst(response);
+//        } catch (ErrorResponseException e) {
+//            log.severe(e.toString());
+//            return data;
+//        }
+//        return data;
+//    }
+
+
+    public void sendWriteCommand(Register register, int value) throws ResponseParsingException,ErrorResponseException {
+        byte[] packet=null;
+        if (register.getSize() == 2) {
+            packet = new PacketV1().buildWriteData(servoId, register.getAddress(), value%256, value/256);
+        } else if (register.getSize() == 1) {
+            packet = new PacketV1().buildWriteData(servoId, register.getAddress(), value);
+        }
+        byte[] response = controller.getPort().sendAndReceive(packet);
+        new PacketV1().parseFirst(response);
+
+    }
+
+    private int sendReadCommand(Register register) throws ResponseParsingException {
+        byte[] packet = new PacketV1().buildReadData(servoId, register.getAddress(), register.getSize());
+        byte[] response = controller.getPort().sendAndReceive(packet);
+        Data data = null;
+        try {
+            data = new PacketV1().parseFirst(response);
+        } catch (ErrorResponseException e) {
+            log.severe(e.toString());
+            return -1;
+        }
+        return data.result;
+    }
+
+    private boolean sendWriteCommandNoEx(Register r, int v) {
+        try {
+            sendWriteCommand(r,v);
+            return true;
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return false;
+        } catch (ErrorResponseException e) {
+            log.severe(e.getMessage());
+            return false;
+        }
+    }
+
 }

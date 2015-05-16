@@ -1,5 +1,6 @@
 package cz.skoky.xl320.raw;
 
+import com.skoky.dynamixel.raw.Data;
 import com.skoky.dynamixel.raw.PacketCommon;
 import com.skoky.dynamixel.raw.PacketV2;
 import org.apache.commons.codec.DecoderException;
@@ -34,7 +35,7 @@ public class PacketV2Test {
     public void testWriteDate() {
         byte[] write = new PacketV2().buildWriteData(1, 0xc, 0x64, 0xaa);
         Assert.assertArrayEquals(new byte[]{(byte) 0xFF,(byte) 0xFF,(byte) 0xFD,0,1,6,0,3,0xC,0x64, (byte) 0xaa, (byte) 0xD7, (byte) 0x38},write);
-        List<PacketCommon.Data> b = new PacketV2().parse(write);
+        List<Data> b = new PacketV2().parse(write);
 
     }
 
@@ -42,9 +43,9 @@ public class PacketV2Test {
     public void parseTest() throws DecoderException {
         byte[] data = Hex.decodeHex("fffffd0001070055805e011b34c7fffffd0002070055805e011b3ef7".toCharArray());
 
-        List<PacketV2.Data> parsed = new PacketV2().parse(data);
+        List<Data> parsed = new PacketV2().parse(data);
         assertFalse(parsed.size() != 2);
-        for(PacketV2.Data d: parsed) {
+        for(Data d: parsed) {
             assertFalse(d.servoId>2);
             assertFalse(d.type!=PacketV2.TYPES.STATUS);
             assertFalse(d.params.length!=4);
@@ -56,8 +57,8 @@ public class PacketV2Test {
     @Test
     public void parseTestCRC() throws DecoderException {
         byte[] data = Hex.decodeHex(("fffffd0002050055805e9da8").toCharArray());
-        List<PacketV2.Data> parsed = new PacketV2().parse(data);
-        for(PacketV2.Data d: parsed) {
+        List<Data> parsed = new PacketV2().parse(data);
+        for(Data d: parsed) {
             System.out.println(d.toString());
         }
 

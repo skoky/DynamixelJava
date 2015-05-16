@@ -5,16 +5,8 @@ package com.skoky.dynamixel.err;
  */
 public class ResponseParsingException extends Throwable {
 
-    private final String msg;
-
     public ResponseParsingException(String s) {
-        this.msg=s;
+        super(s);
     }
 
-    @Override
-    public String toString() {
-        return "ResponseParsingException{" +
-                "msg='" + msg + '\'' +
-                '}';
-    }
 }

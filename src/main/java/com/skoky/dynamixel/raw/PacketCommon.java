@@ -17,28 +17,6 @@ public class PacketCommon {
     }
 
 
-    public class Data {
-        public final TYPES type;
-        public int servoId;
-        public int[] params;
-        public int error;
-
-        public Data(TYPES type) {
-            this.type=type;
-        }
-
-        @Override
-        public String toString() {
-            return "Data{" +
-                    "type=" + type +
-                    ", servoId=" + servoId +
-                    ", error="+error +
-                    ", params=" + Arrays.toString(params) +
-                    '}';
-        }
-    }
-
-
 
     public static enum TYPES{
         PING(1),

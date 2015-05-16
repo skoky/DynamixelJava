@@ -1,5 +1,6 @@
 package com.skoky.dynamixel.raw;
 
+import com.skoky.dynamixel.err.ResponseParsingException;
 import org.apache.commons.codec.binary.Hex;
 
 import java.nio.ByteBuffer;
@@ -120,6 +121,11 @@ public class PacketV2 extends PacketCommon implements  Packet {
             offset += 5 + length + offset+2;
         }
         return results;
+    }
+
+    @Override
+    public Data parseFirst(byte[] p) throws ResponseParsingException {
+        return null;
     }
 
     private int[] toIntArray(byte[] data) {
