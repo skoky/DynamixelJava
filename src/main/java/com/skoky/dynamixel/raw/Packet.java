@@ -1,6 +1,6 @@
 package com.skoky.dynamixel.raw;
 
-import com.skoky.dynamixel.err.ErrorResponseException;
+import com.skoky.dynamixel.err.ErrorResponseV1Exception;
 import com.skoky.dynamixel.err.ResponseParsingException;
 
 import java.util.List;
@@ -16,6 +16,6 @@ public interface Packet {
     byte[] buildReadData(int servoId, int... params);
 
     List<Data> parse(byte[] p) throws ResponseParsingException;
-    Data parseFirst(byte[] p) throws ResponseParsingException, ErrorResponseException;
+    Data parseFirst(byte[] p) throws ResponseParsingException, ErrorResponseV1Exception;
 
 }

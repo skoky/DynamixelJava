@@ -1,15 +1,12 @@
 package com.skoky.dynamixel.script;
 
 import com.skoky.dynamixel.Controller;
-import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.controller.USB2Dynamixel;
 import com.skoky.dynamixel.err.SerialLinkError;
 import com.skoky.dynamixel.port.PortLinux;
 import com.skoky.dynamixel.port.SerialPortFactory;
-import com.skoky.dynamixel.servo.Baudrate;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by skoky on 9.5.15.

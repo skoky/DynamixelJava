@@ -35,7 +35,7 @@ public class OpenCM implements Controller {
         LogManager.getLogManager().reset();
         ConsoleHandler handler = new ConsoleHandler();
         handler.setLevel(Level.ALL);
-        log.setLevel(Level.ALL);
+        log.setLevel(Level.INFO);
         log.addHandler(handler);
      //   log.severe("Logger created. Level:" + log.getLevel());
     }
@@ -48,7 +48,7 @@ public class OpenCM implements Controller {
     @Override
     public List<Servo> listServos() {
 
-        byte[] ping = packet.buildPing(1);
+        byte[] ping = packet.buildPing();
         byte[] pingResponse;
         List<Servo> servos = new ArrayList<>();
         try {
@@ -57,8 +57,10 @@ public class OpenCM implements Controller {
             if (responses != null)
                 for (Data d : responses) {
                     log.fine(d.toString());
-                    if (d.params[1] == 85 && d.params[2] == 128)
+                    if (d.params[1] == 1 && d.params[2] == 27)
                         servos.add(new ServoXL320(d.servoId, this));
+                    else
+                        log.info("Unknown servo on the bus");
                 }
 
         } catch (SerialLinkError serialLinkError) {

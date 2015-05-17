@@ -1,25 +1,18 @@
 package cz.skoky.xl320.raw;
 
-import com.skoky.dynamixel.err.ErrorResponseException;
+import com.skoky.dynamixel.err.ErrorResponseV1Exception;
 import com.skoky.dynamixel.err.ResponseParsingException;
 import com.skoky.dynamixel.raw.Data;
 import com.skoky.dynamixel.raw.PacketCommon;
 import com.skoky.dynamixel.raw.PacketV1;
-import com.skoky.dynamixel.raw.PacketV2;
-import junit.framework.TestCase;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.List;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.TestCase.assertFalse;
@@ -49,7 +42,7 @@ public class PacketV1Test {
     }
 
     @Test
-    public void testParse1() throws DecoderException, ResponseParsingException, ErrorResponseException {
+    public void testParse1() throws DecoderException, ResponseParsingException, ErrorResponseV1Exception {
         List<Data> data = new PacketV1().parse(Hex.decodeHex("ffff010200fc".toCharArray()));
         assertFalse(data.size() != 1);
         Data d = data.get(0);
@@ -63,7 +56,7 @@ public class PacketV1Test {
     }
 
     @Test
-    public void testParse2() throws DecoderException, ResponseParsingException, ErrorResponseException {
+    public void testParse2() throws DecoderException, ResponseParsingException, ErrorResponseV1Exception {
         List<Data> data = new PacketV1().parse(Hex.decodeHex("ffff0104000c00ee".toCharArray()));
         assertFalse(data.size() != 1);
         Data d = data.get(0);
@@ -79,7 +72,7 @@ public class PacketV1Test {
     }
 
     @Test
-    public void testParse3() throws DecoderException, ResponseParsingException, ErrorResponseException {
+    public void testParse3() throws DecoderException, ResponseParsingException, ErrorResponseV1Exception {
         List<Data> data = new PacketV1().parse(Hex.decodeHex("ffff0104000c00ee".toCharArray()));
         assertFalse(data.size() != 1);
         Data d = data.get(0);
@@ -98,7 +91,7 @@ public class PacketV1Test {
     }
 
     @Test
-    public void testParse4() throws DecoderException, ResponseParsingException, ErrorResponseException {
+    public void testParse4() throws DecoderException, ResponseParsingException, ErrorResponseV1Exception {
         List<Data> data = new PacketV1().parse(Hex.decodeHex("ffff0104000000fa".toCharArray()));
         assertFalse(data.size() != 1);
         Data d = data.get(0);
@@ -127,14 +120,14 @@ public class PacketV1Test {
         try {
             new PacketV1().parseFirst(Hex.decodeHex("ffff0104010000f9".toCharArray()));
             assertFalse(true);
-        } catch (ErrorResponseException e) {
+        } catch (ErrorResponseV1Exception e) {
             assertTrue(true);
         }
 
         try {
             new PacketV1().parseFirst(Hex.decodeHex("ffff010208f4".toCharArray()));
             assertFalse(true);
-        } catch (ErrorResponseException e) {
+        } catch (ErrorResponseV1Exception e) {
             assertTrue(true);
         }
 

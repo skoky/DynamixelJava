@@ -1,7 +1,7 @@
 package com.skoky.dynamixel;
 
-import com.skoky.dynamixel.servo.Baudrate;
 import com.skoky.dynamixel.servo.ReturnLevel;
+import com.skoky.dynamixel.servo.xl320.LedColor;
 
 /**
  * Created by skoky on 5.5.15.
@@ -15,8 +15,8 @@ public interface Servo {
     int getId();
     boolean setId(int newId);
 
-    Baudrate getBaudRate();
-    boolean setBaudrate(Baudrate b);
+    int getBaudRate();
+    boolean setBaudrate(int speed);
 
     boolean setReturnDelayTime(int time);
     int getReturnDelayTime();
@@ -48,11 +48,11 @@ public interface Servo {
     void setAlarmShutdown(int value);
     int getAlarmShutdown();
 
-    void setTorqueEnable(boolean enable);
+    boolean setTorqueEnable(boolean enable);
     boolean getTorqueEnabled();
 
-    boolean setLedOn(boolean on);
-    boolean getLedOn();
+    boolean setLedOn(LedColor on);
+    LedColor getLedOn();
 
     // TODO compliance margins
 
@@ -65,7 +65,7 @@ public interface Servo {
     boolean setTorqueLimit(int limit);
     int getTorqueLimit();
 
-    public int getPresentPosition();
+    int getPresentPosition();
     int getPresentSpeed();
     int getPresentLoad();
     float getPresentVoltage();
@@ -81,6 +81,6 @@ public interface Servo {
 
     boolean isWheelMode();
     boolean isJointMode();
-    void setWheelMode();
-    void setJointMode();
+    boolean setWheelMode();
+    boolean setJointMode();
 }

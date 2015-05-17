@@ -54,9 +54,9 @@ public class PortLinux implements SerialPort {
         opts.c_cc[VMIN] = 0;
         opts.c_cc[VTIME] = 10;
 
-        cfsetispeed(opts, B230400);
-        cfsetospeed(opts, B230400);
-        setspeed(fd, opts, 1000000);
+//        cfsetispeed(opts, B230400);
+//        cfsetospeed(opts, B230400);
+//        setspeed(fd, opts, 1000000);
 
         tcsetattr(fd, TCSANOW, opts);
 

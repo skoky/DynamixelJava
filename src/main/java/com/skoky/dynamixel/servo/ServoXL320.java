@@ -2,11 +2,16 @@ package com.skoky.dynamixel.servo;
 
 import com.skoky.dynamixel.Controller;
 import com.skoky.dynamixel.Servo;
+import com.skoky.dynamixel.err.ErrorResponseV2Exception;
 import com.skoky.dynamixel.err.ResponseParsingException;
 import com.skoky.dynamixel.err.SerialLinkError;
 import com.skoky.dynamixel.raw.Data;
+import com.skoky.dynamixel.raw.Packet;
+import com.skoky.dynamixel.raw.PacketV2;
+import com.skoky.dynamixel.servo.xl320.LedColor;
 import com.skoky.dynamixel.servo.xl320.Register;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -25,71 +30,17 @@ public class ServoXL320 extends ServoCommon implements Servo {
     @Override
     public int getPresentPosition() {
         try {
-            Data data = sendReadCommand(Register.CURRENT_POSITION);
-            return data.params[0];
+            return sendReadCommand(Register.CURRENT_POSITION);
         } catch (ResponseParsingException e) {
             log.severe(e.getMessage());
             return -1;
         }
     }
 
-
-
-//    PacketCommon.Data sendReadCommand(Register r) throws SerialLinkError, ResponseParsingException {
-//        Packet p = new PacketV2();
-//        int rLow = r.getAddress();
-//        int rHigh = r.getAddress() / 256;
-//        byte[] posCommand = p.buildReadData(servoId,rLow,rHigh,r.getSize(),0);
-//        byte[] response = controller.getPort().sendAndReceive(posCommand);
-//        List<PacketV2.Data> d = p.parse(response);
-//        if (d.size()!=1)
-//            throw new ResponseParsingException("Invalid response");
-//
-//        if (d.get(0).params==null || d.get(0).params.length!=r.getSize())
-//            throw new ResponseParsingException("Invalid response, params");
-//
-//        return d.get(0);
-//    }
-
-    Data sendReadCommand(Register r) throws SerialLinkError, ResponseParsingException {
-        return null;
-    }
-
-    Data sendWriteCommand(Register r) throws SerialLinkError, ResponseParsingException {
-        return null;
-    }
-
-
-/*
-    public void sendWriteCommand(Register r, int limit) throws ResponseParsingException {
-        if (limit < r.getMin() || limit > r.getMax()) {
-            System.out.println("Value over limits");
-            return;
-        }
-        if (r.isReadOnly()) {
-            System.out.println("Register is read-only!");
-        }
-        int rLow = r.getAddress();
-        int rHigh = r.getAddress() / 256;
-        Packet p = new PacketV2();
-        byte[] posCommand = new byte[0];
-        if (r.getSize() == 1)
-            posCommand = p.buildWriteData(servoId, rLow, rHigh, limit);
-        else if (r.getSize() == 2)
-            posCommand = p.buildWriteData(servoId, rLow, rHigh, limit%256,limit/256);
-        byte[] response = controller.getPort().sendAndReceive(posCommand);
-        log.fine("Write Response:" + Hex.encodeHexString(response));
-        List<PacketV2.Data> d = p.parse(response);
-        log.fine("Write Response:" + d.get(0));
-    }
-*/
-
-
     @Override
     public int getPresentSpeed() {
         try {
-            Data data = sendReadCommand(Register.PRESENT_SPEED);
-            return data.params[0]+data.params[1]*255;
+            return sendReadCommand(Register.PRESENT_SPEED);
         } catch (ResponseParsingException e) {
             e.printStackTrace();
             return -1;
@@ -104,12 +55,23 @@ public class ServoXL320 extends ServoCommon implements Servo {
 
     @Override
     public float getPresentVoltage() {
-        return 0;
+        try {
+            return sendReadCommand(Register.PRESENT_VOLTAGE)/10;
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
     }
 
     @Override
     public int getPresentTemperature() {
-        return 0;
+        try {
+            return sendReadCommand(Register.PRESENT_TEMPERATURE);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
+
     }
 
     @Override
@@ -119,7 +81,14 @@ public class ServoXL320 extends ServoCommon implements Servo {
 
     @Override
     public Boolean isMoving() {
-        return false;
+        try {
+            int r = sendReadCommand(Register.MOVING);
+            if (r==0) return false;
+            else return true;
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return null;
+        }
     }
 
     @Override
@@ -144,29 +113,54 @@ public class ServoXL320 extends ServoCommon implements Servo {
 
     @Override
     public boolean isWheelMode() {
-        return false;
+        try {
+            int m = sendReadCommand(Register.CONTROL_MODE);
+            if (m==1) return true;
+            else return false;
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return false;
+        }
     }
 
     @Override
     public boolean isJointMode() {
-        return false;
+        try {
+            int m = sendReadCommand(Register.CONTROL_MODE);
+            if (m==2) return true;
+            else return false;
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return false;
+        }
     }
 
     @Override
-    public void setWheelMode() {
-
+    public boolean setWheelMode() {
+        boolean done = setTorqueEnable(false);
+        if (!done) return false;
+        done = sendWriteCommandNoEx(Register.CONTROL_MODE, 1);
+        if (!done) return false;
+        done = setTorqueEnable(true);
+        if (!done) return false;
+        return true;
     }
 
     @Override
-    public void setJointMode() {
-
+    public boolean setJointMode() {
+        boolean done = setTorqueEnable(false);
+        if (!done) return false;
+        done = sendWriteCommandNoEx(Register.CONTROL_MODE, 2);
+        if (!done) return false;
+        done = setTorqueEnable(true);
+        if (!done) return false;
+        return true;
     }
 
     @Override
     public int getModelNumber() {
         try {
-            Data data = sendReadCommand(Register.MODEL_NUMBER);
-            return data.params[0] + data.params[1]*256;
+            return sendReadCommand(Register.MODEL_NUMBER);
         } catch (ResponseParsingException e) {
             log.severe(e.getMessage());
             return -1;
@@ -176,8 +170,7 @@ public class ServoXL320 extends ServoCommon implements Servo {
     @Override
     public int getFirmwareVersion() {
         try {
-            Data data = sendReadCommand(Register.FIRMWARE_VERSION);
-            return data.params[0];
+            return sendReadCommand(Register.FIRMWARE_VERSION);
         } catch (ResponseParsingException e) {
             log.severe(e.getMessage());
             return -1;
@@ -187,7 +180,12 @@ public class ServoXL320 extends ServoCommon implements Servo {
 
     @Override
     public int getId() {
-        return 0;
+        try {
+            return sendReadCommand(Register.ID);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
     }
 
     @Override
@@ -197,14 +195,18 @@ public class ServoXL320 extends ServoCommon implements Servo {
     }
 
     @Override
-    public Baudrate getBaudRate() {
-        return null;
+    public int getBaudRate() {
+        try {
+            return sendReadCommand(Register.BAUD_RATE);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
     }
 
     @Override
-    public boolean setBaudrate(Baudrate b) {
-
-        return false;
+    public boolean setBaudrate(int speed) {
+        return sendWriteCommandNoEx(Register.BAUD_RATE,speed);
     }
 
     @Override
@@ -215,7 +217,12 @@ public class ServoXL320 extends ServoCommon implements Servo {
 
     @Override
     public int getReturnDelayTime() {
-        return 0;
+        try {
+            return sendReadCommand(Register.DELAY_TIME);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
     }
 
     @Override
@@ -227,8 +234,7 @@ public class ServoXL320 extends ServoCommon implements Servo {
     @Override
     public int getCWAngleLimit() {
         try {
-            Data data = sendReadCommand(Register.CW_ANGLE_LIMIT);
-            return data.params[0];
+            return sendReadCommand(Register.CW_ANGLE_LIMIT);
         } catch (ResponseParsingException e) {
             log.severe(e.getMessage());
             return -1;
@@ -263,7 +269,12 @@ public class ServoXL320 extends ServoCommon implements Servo {
 
     @Override
     public float getLowestLimitVoltage() {
-        return 0;
+        try {
+            return sendReadCommand(Register.LOWER_LIMIT_VOLTAGE)/10;
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
     }
 
     @Override
@@ -274,7 +285,13 @@ public class ServoXL320 extends ServoCommon implements Servo {
 
     @Override
     public float getHighestLimitVoltage() {
-        return 0;
+        try {
+            return sendReadCommand(Register.UPPER_LIMIT_VOLTAGE)/10;
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
+
     }
 
     @Override
@@ -318,8 +335,10 @@ public class ServoXL320 extends ServoCommon implements Servo {
     }
 
     @Override
-    public void setTorqueEnable(boolean enable) {
-
+    public boolean setTorqueEnable(boolean enable) {
+        int i = 0;
+        if (enable) i=1;
+        return sendWriteCommandNoEx(Register.TORQUE_ENABLE,i);
     }
 
     @Override
@@ -328,34 +347,51 @@ public class ServoXL320 extends ServoCommon implements Servo {
     }
 
     @Override
-    public boolean setLedOn(boolean on) {
-        return false;
+    public boolean setLedOn(LedColor color) {
+        return sendWriteCommandNoEx(Register.LED_ON_OFF, color.getId());
     }
 
     @Override
-    public boolean getLedOn() {
-        return false;
+    public LedColor getLedOn() {
+        try {
+            int colorId = sendReadCommand(Register.LED_ON_OFF);
+            return LedColor.getById(colorId);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return LedColor.UNKNOWN;
+        }
+
     }
 
     @Override
     public boolean setGoalPosition(int position) {
-        return false;
+        return sendWriteCommandNoEx(Register.GOAL_POSITION,position);
     }
+
 
     @Override
     public int getGoalPosition() {
-        return 0;
+        try {
+            return sendReadCommand(Register.GOAL_POSITION);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
     }
 
     @Override
     public boolean setMovingSpeed(int speed) {
-
-        return false;
+        return false;   // not supported on this servo
     }
 
     @Override
     public int getMovingSpeed() {
-        return 0;
+        try {
+            return sendReadCommand(Register.PRESENT_SPEED);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
     }
 
     @Override
@@ -370,5 +406,60 @@ public class ServoXL320 extends ServoCommon implements Servo {
     }
 
 
+
+    int sendReadCommand(Register r) throws SerialLinkError, ResponseParsingException {
+        Packet p = new PacketV2();
+        int rLow = r.getAddress();
+        int rHigh = r.getAddress() / 256;
+        byte[] posCommand = p.buildReadData(servoId,rLow,rHigh,r.getSize(),0);
+        byte[] response = controller.getPort().sendAndReceive(posCommand);
+        List<Data> d = p.parse(response);
+        if (d.size()!=1)
+            throw new ResponseParsingException("Invalid response");
+
+        if (d.get(0).params==null || d.get(0).params.length!=r.getSize())
+            throw new ResponseParsingException("Invalid response, params");
+
+        Data data = d.get(0);
+        if (r.getSize()>=1)
+            data.result = data.params[0];
+        if (r.getSize()==2)
+            data.result += data.params[1]*256;
+        return data.result;
+    }
+
+    private boolean sendWriteCommandNoEx(Register r, int v) {
+        try {
+            sendWriteCommand(r, v);
+            return true;
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return false;
+        } catch (ErrorResponseV2Exception e) {
+            log.severe(e.getErrorName());
+            return false;
+        }
+    }
+
+    public Data sendWriteCommand(Register r, int limit) throws ResponseParsingException, ErrorResponseV2Exception {
+        if (limit < r.getMin() || limit > r.getMax()) throw new IllegalArgumentException("Value over limits");
+        if (r.isReadOnly()) throw new IllegalArgumentException("Register is read-only!");
+
+        int rLow = r.getAddress();
+        int rHigh = r.getAddress() / 256;
+        Packet p = new PacketV2();
+        byte[] posCommand = new byte[0];
+        if (r.getSize() == 1)
+            posCommand = p.buildWriteData(servoId, rLow, rHigh, limit);
+        else if (r.getSize() == 2)
+            posCommand = p.buildWriteData(servoId, rLow, rHigh, limit%256,limit/256);
+        byte[] response = controller.getPort().sendAndReceive(posCommand);
+        List<Data> d = p.parse(response);
+        Data first = d.get(0);
+        if (first.error!=0)
+            throw new ErrorResponseV2Exception(first.error);
+        else
+            return first;
+    }
 
 }

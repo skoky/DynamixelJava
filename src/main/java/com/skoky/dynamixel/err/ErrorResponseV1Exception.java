@@ -3,12 +3,12 @@ package com.skoky.dynamixel.err;
 /**
  * Created by skokan on 14.5.15.
  */
-public class ErrorResponseException extends Throwable {
+public class ErrorResponseV1Exception extends Throwable {
 
     private final int errorCode;
     private final String errorName;
 
-    public ErrorResponseException(int errorCode) {
+    public ErrorResponseV1Exception(int errorCode) {
         super("Error code:"+errorCode);
         this.errorCode=errorCode;
         this.errorName=getErrorName();
@@ -35,7 +35,7 @@ public class ErrorResponseException extends Throwable {
 
     @Override
     public String toString() {
-        return "ErrorResponseException{" +
+        return "ErrorResponseV1Exception{" +
                 "errorName=" + errorName+
                 '}';
     }

@@ -11,10 +11,23 @@ public enum LedColor {
     YELLOW(3),
     BLUE(4),
     GREEN(2),
-    RED(1);
+    RED(1),
+    UNKNOWN(-1);
 
 
-    LedColor(int i) {
+    private int id;
 
+    LedColor(int id) {
+        this.id=id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public static LedColor getById(int colorId) {
+        for(LedColor c : LedColor.values())
+            if (c.id==colorId) return c;
+        return UNKNOWN;
     }
 }

@@ -1,6 +1,6 @@
 package com.skoky.dynamixel.raw;
 
-import com.skoky.dynamixel.err.ErrorResponseException;
+import com.skoky.dynamixel.err.ErrorResponseV1Exception;
 import com.skoky.dynamixel.err.ResponseParsingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,10 +90,10 @@ public class PacketV1 extends PacketCommon implements Packet {
     }
 
     @Override
-    public Data parseFirst(byte[] p) throws ResponseParsingException, ErrorResponseException {
+    public Data parseFirst(byte[] p) throws ResponseParsingException, ErrorResponseV1Exception {
         List<Data> d = parse(p);
         Data one = d.get(0);
-        if (one.error!=0) throw new ErrorResponseException(one.error);
+        if (one.error!=0) throw new ErrorResponseV1Exception(one.error);
         return one;
     }
 

@@ -2,11 +2,12 @@ package com.skoky.dynamixel.servo;
 
 import com.skoky.dynamixel.Controller;
 import com.skoky.dynamixel.Servo;
-import com.skoky.dynamixel.err.ErrorResponseException;
+import com.skoky.dynamixel.err.ErrorResponseV1Exception;
 import com.skoky.dynamixel.err.ResponseParsingException;
 import com.skoky.dynamixel.raw.Data;
 import com.skoky.dynamixel.raw.PacketV1;
 import com.skoky.dynamixel.servo.ax12a.Register;
+import com.skoky.dynamixel.servo.xl320.LedColor;
 
 
 import java.util.logging.Logger;
@@ -146,15 +147,17 @@ public class ServoAX12A extends ServoCommon implements Servo {
     }
 
     @Override
-    public void setWheelMode() {
+    public boolean setWheelMode() {
         setCCWAngleLimit(0);
         setCCWAngleLimit(0);
+        return false;
     }
 
     @Override
-    public void setJointMode() {
+    public boolean setJointMode() {
         setCCWAngleLimit(1023);
         setCCWAngleLimit(1023);
+        return false;
     }
 
     @Override
@@ -193,20 +196,19 @@ public class ServoAX12A extends ServoCommon implements Servo {
     }
 
     @Override
-    public Baudrate getBaudRate() {
+    public int getBaudRate() {
         int value = 0;
         try {
-            value = sendReadCommand(Register.BAUD_RATE);
+            return sendReadCommand(Register.BAUD_RATE);
         } catch (ResponseParsingException e) {
             log.severe("Unable to parse baudrate response");
-            return Baudrate.UNKNOWN;
+            return -1;
         }
-        return Baudrate.getById(value);
     }
 
     @Override
-    public boolean setBaudrate(Baudrate b) {
-        return sendWriteCommandNoEx(Register.BAUD_RATE,b.getId());
+    public boolean setBaudrate(int speed) {
+        return sendWriteCommandNoEx(Register.BAUD_RATE,speed);
     }
 
     @Override
@@ -360,8 +362,9 @@ public class ServoAX12A extends ServoCommon implements Servo {
     }
 
     @Override
-    public void setTorqueEnable(boolean enable) {
+    public boolean setTorqueEnable(boolean enable) {
 
+        return enable;
     }
 
     @Override
@@ -370,16 +373,24 @@ public class ServoAX12A extends ServoCommon implements Servo {
     }
 
     @Override
-    public boolean setLedOn(boolean on) {
-        if (on)
-            return sendWriteCommandNoEx(Register.LED_ON_OFF,1);
-        else
+    public boolean setLedOn(LedColor on) {
+        if (on==LedColor.OFF)
             return sendWriteCommandNoEx(Register.LED_ON_OFF,0);
+        else
+            return sendWriteCommandNoEx(Register.LED_ON_OFF,1);
     }
 
     @Override
-    public boolean getLedOn() {
-        return false;
+    public LedColor getLedOn() {
+        int colorId = 0;
+        try {
+            colorId = sendReadCommand(Register.LED_ON_OFF);
+            if (colorId==0) return LedColor.OFF;
+            else return LedColor.WHITE;
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return LedColor.UNKNOWN;
+        }
     }
 
     @Override
@@ -390,7 +401,7 @@ public class ServoAX12A extends ServoCommon implements Servo {
         } catch (ResponseParsingException e) {
             log.severe(e.getMessage());
             return false;
-        } catch (ErrorResponseException e) {
+        } catch (ErrorResponseV1Exception e) {
             log.severe(e.getErrorName());
             return false;
         }
@@ -438,7 +449,7 @@ public class ServoAX12A extends ServoCommon implements Servo {
 //        Data data = null;
 //        try {
 //            data = new PacketV1().parseFirst(response);
-//        } catch (ErrorResponseException e) {
+//        } catch (ErrorResponseV1Exception e) {
 //            log.severe(e.toString());
 //            return data;
 //        }
@@ -446,7 +457,7 @@ public class ServoAX12A extends ServoCommon implements Servo {
 //    }
 
 
-    public void sendWriteCommand(Register register, int value) throws ResponseParsingException,ErrorResponseException {
+    public void sendWriteCommand(Register register, int value) throws ResponseParsingException,ErrorResponseV1Exception {
         byte[] packet=null;
         if (register.getSize() == 2) {
             packet = new PacketV1().buildWriteData(servoId, register.getAddress(), value%256, value/256);
@@ -464,7 +475,7 @@ public class ServoAX12A extends ServoCommon implements Servo {
         Data data = null;
         try {
             data = new PacketV1().parseFirst(response);
-        } catch (ErrorResponseException e) {
+        } catch (ErrorResponseV1Exception e) {
             log.severe(e.getErrorName());
             return -1;
         }
@@ -478,7 +489,7 @@ public class ServoAX12A extends ServoCommon implements Servo {
         } catch (ResponseParsingException e) {
             log.severe(e.getMessage());
             return false;
-        } catch (ErrorResponseException e) {
+        } catch (ErrorResponseV1Exception e) {
             log.severe(e.getErrorName());
             return false;
         }

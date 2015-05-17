@@ -5,10 +5,8 @@ import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.controller.USB2Dynamixel;
 import com.skoky.dynamixel.err.SerialLinkError;
 import com.skoky.dynamixel.port.PortLinux;
-import com.skoky.dynamixel.port.SerialPort;
 import com.skoky.dynamixel.port.SerialPortFactory;
-import com.skoky.dynamixel.servo.Baudrate;
-import com.skoky.dynamixel.servo.ServoXL320;
+import com.skoky.dynamixel.servo.xl320.LedColor;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,7 +32,7 @@ public class PingV1Script {
         System.out.println("Model number:" + model);
         System.out.println("Baudrate:" + servo.getBaudRate());
 
-        servo.setLedOn(true);
+        servo.setLedOn(LedColor.WHITE);
 
         servo.setMaxTorque(1023);
         System.out.println("Maxtorque:"+servo.getMaxTorque());
@@ -51,7 +49,7 @@ public class PingV1Script {
         System.out.println("Position:" + position);
 
         servo.getBaudRate();
-        servo.setBaudrate(Baudrate.B1000000);
+        servo.setBaudrate(1);
 
         System.out.println("CW limit:" + servo.getCWAngleLimit());
         servo.setCWAngleLimit(0);
@@ -90,7 +88,7 @@ public class PingV1Script {
         System.out.println("Return level:" + servo.getReturnLevel());
         System.out.println("Alarm LED:" + servo.getAlarmLed());
 
-        servo.setLedOn(false);
+        servo.setLedOn(LedColor.OFF);
         controller.getPort().close();
     }
 }
