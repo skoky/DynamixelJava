@@ -65,3 +65,8 @@ print crc16(data_blk,9,0)
 data_blk = [0xff, 0xff, 0xfd, 00, 02, 06, 00, 03, 06, 00, 0x64]  #, 0xce, 0xe1]
 
 print crc16(data_blk,11,0)
+
+# ff ff fd 00 02 07 00 03 06 00 01 00 5093
+data_blk = [0xff, 0xff, 0xfd, 00, 02, 07, 00, 03, 06, 00, 0x1, 00]  #, 0xce, 0xe1]
+
+print crc16(data_blk,12,0)

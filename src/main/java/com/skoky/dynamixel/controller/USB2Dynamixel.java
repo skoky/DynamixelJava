@@ -8,10 +8,7 @@ import com.skoky.dynamixel.port.SerialPort;
 import com.skoky.dynamixel.raw.Data;
 import com.skoky.dynamixel.raw.Packet;
 import com.skoky.dynamixel.raw.PacketV1;
-import com.skoky.dynamixel.raw.PacketV2;
-import com.skoky.dynamixel.servo.ServoAX12A;
-import com.skoky.dynamixel.servo.ServoXL320;
-import org.apache.commons.codec.binary.Hex;
+import com.skoky.dynamixel.servo.ax12a.ServoAX12A;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +32,7 @@ public class USB2Dynamixel implements Controller {
         LogManager.getLogManager().reset();
         ConsoleHandler handler = new ConsoleHandler();
         handler.setLevel(Level.WARNING);
-        log.setLevel(Level.ALL);
+        log.setLevel(Level.INFO);
         log.addHandler(handler);
     }
 
@@ -67,6 +64,11 @@ public class USB2Dynamixel implements Controller {
                 e.printStackTrace();
         }
         return servos;
+    }
+
+    @Override
+    public void setVerbose() {
+        log.setLevel(Level.ALL);
     }
 
 

@@ -1,4 +1,4 @@
-package com.skoky.dynamixel.servo.xl320;
+package com.skoky.dynamixel.servo;
 
 /**
  * Created by skokan on 29.4.15.

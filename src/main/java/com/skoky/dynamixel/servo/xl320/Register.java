@@ -1,5 +1,7 @@
 package com.skoky.dynamixel.servo.xl320;
 
+import java.util.InputMismatchException;
+
 /**
  * List of registers with addresses nd limits. Based on e-manual http://support.robotis.com/en/product/dynamixel/xl-series/xl-320.htm
  *
@@ -7,8 +9,8 @@ package com.skoky.dynamixel.servo.xl320;
  */
 public enum Register {
 
-    MODEL_NUMBER        (0, 2, true, 350, null, null),
-    FIRMWARE_VERSION    (2, 1, true, null, null, null),
+    MODEL_NUMBER        (0, 2, true, 350, null, Integer.MAX_VALUE),
+    FIRMWARE_VERSION    (2, 1, true, null, null, Integer.MAX_VALUE),
     ID                  (3, 1, false, 1, 0, 252),
     BAUD_RATE           (4, 1, false, 3, 0, 3),
     DELAY_TIME          (5, 1, false, 250, 0, 254),
@@ -28,15 +30,15 @@ public enum Register {
     P_GAIN              (29, 1, false, 32, 0, 1023),
     GOAL_POSITION       (30, 2, false, null, 0, 2047),
     GOAL_VELOCITY       (32, 2, false, null, 0, 1023),
-    GOAL_TOURGE         (35, 2, false, null, 0, null),
-    CURRENT_POSITION    (37, 2, true, null, null, null),
-    PRESENT_SPEED       (39, 2, true, null, null, null),
-    PRESENT_LOAD        (41, 2, true, null, null, null),
-    PRESENT_VOLTAGE     (45, 1, true, null, null,null),
-    PRESENT_TEMPERATURE (46, 1, true, null, null, null),
-    REGISTERED_INSTR    (47, 1, true, 0, null, null),
-    MOVING              (49, 1, true, 0, null, null),
-    HW_ERROR_STATUS     (50, 1, true, 0, null, null),
+    GOAL_TOURGE         (35, 2, false, null, 0, Integer.MAX_VALUE),
+    CURRENT_POSITION    (37, 2, true, null, null, Integer.MAX_VALUE),
+    PRESENT_SPEED       (39, 2, true, null, null, Integer.MAX_VALUE),
+    PRESENT_LOAD        (41, 2, true, null, null, Integer.MAX_VALUE),
+    PRESENT_VOLTAGE     (45, 1, true, null, null,Integer.MAX_VALUE),
+    PRESENT_TEMPERATURE (46, 1, true, null, null, Integer.MAX_VALUE),
+    REGISTERED_INSTR    (47, 1, true, 0, null, Integer.MAX_VALUE),
+    MOVING              (49, 1, true, 0, null, Integer.MAX_VALUE),
+    HW_ERROR_STATUS     (50, 1, true, 0, null, Integer.MAX_VALUE),
     PUNCH               (51,2,false,32,0,1023);
 
     private final int address;

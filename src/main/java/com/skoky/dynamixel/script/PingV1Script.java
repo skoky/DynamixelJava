@@ -6,7 +6,7 @@ import com.skoky.dynamixel.controller.USB2Dynamixel;
 import com.skoky.dynamixel.err.SerialLinkError;
 import com.skoky.dynamixel.port.PortLinux;
 import com.skoky.dynamixel.port.SerialPortFactory;
-import com.skoky.dynamixel.servo.xl320.LedColor;
+import com.skoky.dynamixel.servo.LedColor;
 
 import java.util.Arrays;
 import java.util.List;

@@ -7,11 +7,8 @@ import com.skoky.dynamixel.err.SerialLinkError;
 import com.skoky.dynamixel.port.SerialPort;
 import com.skoky.dynamixel.raw.Data;
 import com.skoky.dynamixel.raw.Packet;
-import com.skoky.dynamixel.raw.PacketV1;
 import com.skoky.dynamixel.raw.PacketV2;
-import com.skoky.dynamixel.servo.ServoAX12A;
-import com.skoky.dynamixel.servo.ServoXL320;
-import org.apache.commons.codec.binary.Hex;
+import com.skoky.dynamixel.servo.xl320.ServoXL320;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +66,11 @@ public class OpenCM implements Controller {
             e.printStackTrace();
         }
         return servos;
+    }
+
+    @Override
+    public void setVerbose() {
+        log.setLevel(Level.ALL);
     }
 
     @Override

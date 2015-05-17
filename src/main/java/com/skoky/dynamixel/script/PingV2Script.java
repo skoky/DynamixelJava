@@ -4,8 +4,7 @@ import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.controller.OpenCM;
 import com.skoky.dynamixel.err.SerialLinkError;
 import com.skoky.dynamixel.port.SerialPortFactory;
-import com.skoky.dynamixel.servo.ServoXL320;
-import com.skoky.dynamixel.servo.xl320.LedColor;
+import com.skoky.dynamixel.servo.LedColor;
 
 import java.util.List;
 
@@ -18,7 +17,7 @@ public class PingV2Script {
 
 
         OpenCM controller = new OpenCM(SerialPortFactory.get("/dev/ttyACM0"));
-
+//        controller.setVerbose();
         List<Servo> servos = controller.listServos();
 
         Servo servo = servos.get(0);
@@ -76,6 +75,21 @@ public class PingV2Script {
         servo.setLedOn(LedColor.YELLOW);
         Thread.sleep(500);
         servo.setLedOn(LedColor.OFF);
+
+        System.out.println("Temperature limit:"+servo.getTemperatureLimit());
+        servo.setMaxTorque(1022);
+        System.out.println("Max torque:"+servo.getMaxTorque());
+        System.out.println("Return level:"+servo.getReturnLevel());
+
+        servo.setGoalVelocity(500);
+        System.out.println("Goal velocity:"+servo.getGoalVelocity());
+
+        servo.setTorqueLimit(1022);
+        System.out.println("Torque limit:"+servo.getTorqueLimit());
+        System.out.println("Present load:"+servo.getPresentLoad());
+        System.out.println("HW error:"+servo.getHWStatusError());
+        servo.setAlarmShutdown(0);
+        System.out.println("Alarm shutdown:"+servo.getAlarmShutdown());
 
         controller.getPort().close();
 

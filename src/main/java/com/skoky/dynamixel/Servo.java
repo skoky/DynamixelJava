@@ -1,7 +1,7 @@
 package com.skoky.dynamixel;
 
 import com.skoky.dynamixel.servo.ReturnLevel;
-import com.skoky.dynamixel.servo.xl320.LedColor;
+import com.skoky.dynamixel.servo.LedColor;
 
 /**
  * Created by skoky on 5.5.15.
@@ -45,7 +45,7 @@ public interface Servo {
     void setAlarmLed(boolean onOff);
     int getAlarmLed();
 
-    void setAlarmShutdown(int value);
+    boolean setAlarmShutdown(int value);
     int getAlarmShutdown();
 
     boolean setTorqueEnable(boolean enable);
@@ -83,4 +83,9 @@ public interface Servo {
     boolean isJointMode();
     boolean setWheelMode();
     boolean setJointMode();
+
+    int getGoalVelocity();
+    boolean setGoalVelocity(int velocity);
+
+    int getHWStatusError();
 }
