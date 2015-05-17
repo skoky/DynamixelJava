@@ -80,6 +80,10 @@ public class PortLinux implements SerialPort {
 
     @Override
     public byte[] sendAndReceive(byte[] data) throws SerialLinkError {
+        return sendAndReceive(data,20);
+    }
+    @Override
+    public byte[] sendAndReceive(byte[] data, long sleep) throws SerialLinkError {
         long start=System.currentTimeMillis();
         int result = JTermios.write(fd, data, data.length);
         log.fine("Serial writing:" + Hex.encodeHexString(data) + " size:" + result);

@@ -17,4 +17,5 @@ public interface SerialPort {
 
 
     byte[] sendAndReceive(byte[] p) throws SerialLinkError;
+    byte[] sendAndReceive(byte[] p, long longSleep) throws SerialLinkError;
 }

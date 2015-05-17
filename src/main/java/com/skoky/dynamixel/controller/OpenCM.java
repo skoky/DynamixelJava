@@ -49,7 +49,7 @@ public class OpenCM implements Controller {
         byte[] pingResponse;
         List<Servo> servos = new ArrayList<>();
         try {
-            pingResponse = port.sendAndReceive(ping);
+            pingResponse = port.sendAndReceive(ping,100);
             List<Data> responses = packet.parse(pingResponse);
             if (responses != null)
                 for (Data d : responses) {

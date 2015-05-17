@@ -118,7 +118,7 @@ public class PacketV2 extends PacketCommon implements  Packet {
             results.add(result);
             if (data.length<=6+length+offset+1)
                 break;
-            offset += 5 + length + offset+2;
+            offset += 5 + length + 2;
         }
         return results;
     }

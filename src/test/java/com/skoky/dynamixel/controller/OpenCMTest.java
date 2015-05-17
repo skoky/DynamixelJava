@@ -2,6 +2,7 @@ package com.skoky.dynamixel.controller;
 
 import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.controller.OpenCM;
+import com.skoky.dynamixel.err.SerialLinkError;
 import com.skoky.dynamixel.port.SerialPort;
 import org.junit.Test;
 
@@ -27,6 +28,11 @@ public class OpenCMTest {
             @Override
             public byte[] sendAndReceive(byte[] p) {
                 return new byte[]{(byte) 0xFF, (byte) 0xFF, 1,2,3,4};
+            }
+
+            @Override
+            public byte[] sendAndReceive(byte[] p, long longSleep) throws SerialLinkError {
+                return new byte[0];
             }
         };
         OpenCM controller = new OpenCM(port);

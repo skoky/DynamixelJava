@@ -175,6 +175,11 @@ public class ServoAX12A implements Servo {
     }
 
     @Override
+    public boolean setGoalPositionAndWait(int pos) {
+        return false;
+    }
+
+    @Override
     public int getModelNumber() {
         try {
             return sendReadCommand(Register.MODEL_NUMBER);
