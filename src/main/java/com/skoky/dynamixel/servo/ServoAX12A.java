@@ -242,8 +242,8 @@ public class ServoAX12A extends ServoCommon implements Servo {
     }
 
     @Override
-    public void setCCWAngleLimit(int limit) {
-
+    public boolean setCCWAngleLimit(int limit) {
+        return sendWriteCommandNoEx(Register.CCW_ANGLE_LIMIT,limit);
     }
 
     @Override

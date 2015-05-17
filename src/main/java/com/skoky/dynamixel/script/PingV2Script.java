@@ -57,7 +57,9 @@ public class PingV2Script {
         int model = servo.getModelNumber();
         System.out.println("Model number:" + model);
 
+        servo.setCWAngleLimit(1);
         System.out.println("CW limit:"+servo.getCWAngleLimit());
+        servo.setCCWAngleLimit(1022);
         System.out.println("CCW Limit:" + servo.getCCWAngleLimit());
 
         System.out.println("Temp:"+servo.getPresentTemperature());

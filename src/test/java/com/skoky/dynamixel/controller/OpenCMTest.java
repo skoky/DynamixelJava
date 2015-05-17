@@ -1,4 +1,4 @@
-package cz.skoky.xl320.controller;
+package com.skoky.dynamixel.controller;
 
 import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.controller.OpenCM;

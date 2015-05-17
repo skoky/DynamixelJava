@@ -227,8 +227,7 @@ public class ServoXL320 extends ServoCommon implements Servo {
 
     @Override
     public boolean setCWAngleLimit(int limit) {
-
-        return false;
+        return sendWriteCommandNoEx(Register.CW_ANGLE_LIMIT,limit);
     }
 
     @Override
@@ -242,13 +241,18 @@ public class ServoXL320 extends ServoCommon implements Servo {
     }
 
     @Override
-    public void setCCWAngleLimit(int limit) {
-
+    public boolean setCCWAngleLimit(int limit) {
+        return sendWriteCommandNoEx(Register.CCW_ANGLE_LIMIT,limit);
     }
 
     @Override
     public int getCCWAngleLimit() {
-        return 0;
+        try {
+            return sendReadCommand(Register.CCW_ANGLE_LIMIT);
+        } catch (ResponseParsingException e) {
+            log.severe(e.getMessage());
+            return -1;
+        }
     }
 
     @Override

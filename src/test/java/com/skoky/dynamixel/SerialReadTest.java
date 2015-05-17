@@ -1,4 +1,4 @@
-package cz.skoky.xl320;
+package com.skoky.dynamixel;
 
 import com.skoky.dynamixel.port.SerialPortException;
 import com.skoky.dynamixel.port.SerialPortFactory;

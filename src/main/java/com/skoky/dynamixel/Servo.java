@@ -24,7 +24,7 @@ public interface Servo {
     boolean setCWAngleLimit(int limit);
     int getCWAngleLimit();
 
-    void setCCWAngleLimit(int limit);
+    boolean setCCWAngleLimit(int limit);
     int getCCWAngleLimit();
 
     boolean setTemperatureLimit(int limit);

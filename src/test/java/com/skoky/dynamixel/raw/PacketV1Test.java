@@ -1,4 +1,4 @@
-package cz.skoky.xl320.raw;
+package com.skoky.dynamixel.raw;
 
 import com.skoky.dynamixel.err.ErrorResponseV1Exception;
 import com.skoky.dynamixel.err.ResponseParsingException;

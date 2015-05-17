@@ -1,4 +1,4 @@
-package cz.skoky.xl320.servo;
+package com.skoky.dynamixel.servo;
 
 import org.junit.Test;
 

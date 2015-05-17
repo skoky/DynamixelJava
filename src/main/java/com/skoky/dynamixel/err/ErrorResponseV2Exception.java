@@ -8,39 +8,46 @@ public class ErrorResponseV2Exception extends Throwable {
     private final int errorCode;
     private final String errorName;
 
+
+    String[] bitsError = new String[] {"",
+            "1:Result failed",
+            "2:Instruction error",
+            "4:CRC error",
+            "8:Data range error",
+            "16:Data length error",
+            "32:Data limit error",
+            "64:Access error",
+            "128:Warning: probably low voltage"};
+
     public ErrorResponseV2Exception(int errorCode) {
         super("Error code:"+errorCode);
         this.errorCode=errorCode;
-        this.errorName=getErrorName();
+        this.errorName=getErrors();
     }
 
-
-    public String getErrorName() {
-        switch (errorCode) {
-            case 1:
-                return "Result failed";
-            case 2:
-                return "Instruction error";
-            case 4:
-                return "CRC error";
-            case 8:
-                return "Data range error";
-            case 16:
-                return "Data length error";
-            case 32:
-                return "Data limit error";
-            case 64:
-                return "Access error";
-            case 128:
-                return "Warning: probably low voltage";
-            default:return "Unknown error code: "+errorCode;
+    private String getErrors() {
+        StringBuilder sb = new StringBuilder();
+        String errorBits = Integer.toBinaryString(errorCode);
+        int epos;
+        for(int i=errorBits.length()-1; i>=0;i--) {
+            if (errorBits.charAt(i)=='1') {
+                epos = errorBits.length() - i;
+                sb.append(bitsError[epos]);
+                sb.append(",");
+            }
         }
+        if (sb.length()==0) return "";
+        return sb.substring(0,sb.length()-1);
     }
 
     @Override
     public String toString() {
         return "ErrorResponseV1Exception{" +
-                "errorName=" + errorName+
+                "errors=" + errorName+
                 '}';
+    }
+
+    public String getErrorName() {
+        return errorName;
     }
 }
