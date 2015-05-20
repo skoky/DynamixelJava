@@ -1,19 +1,17 @@
 package com.skoky.dynamixel.script;
 
 import com.skoky.dynamixel.Controller;
-import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.controller.USB2Dynamixel;
 import com.skoky.dynamixel.err.SerialLinkError;
 import com.skoky.dynamixel.port.PortLinux;
 import com.skoky.dynamixel.port.SerialPortFactory;
 
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by skoky on 9.5.15.
  */
-public class PingV1ScriptIDs {
+public class PingV1Reset {
 
     public static void main(String[] args) throws SerialLinkError {
 
@@ -21,12 +19,9 @@ public class PingV1ScriptIDs {
         Controller controller = new USB2Dynamixel(SerialPortFactory.get("/dev/ttyUSB0"));
         PortLinux p = (PortLinux) controller.getPort();
         p.setRecordFile("src/test/resources/audit.log");
-        List<Servo> servos = controller.listServos();
-        System.out.println("Servos:" + Arrays.toString(servos.toArray()));
+        System.out.println("Servos:" + Arrays.toString(controller.listServos().toArray()));
 
-        Servo servo = servos.get(0);
-        servo.setId(2);
-        System.out.println("New id:" + servo.getId());
+        controller.resetServos();
 
 
         controller.getPort().close();

@@ -14,8 +14,10 @@ public interface Packet {
     byte[] buildPing(int servoId);
     byte[] buildWriteData(int servoId, int... params);
     byte[] buildReadData(int servoId, int... params);
+    byte[] buildReset();
 
     List<Data> parse(byte[] p) throws ResponseParsingException;
     Data parseFirst(byte[] p) throws ResponseParsingException, ErrorResponseV1Exception;
+
 
 }

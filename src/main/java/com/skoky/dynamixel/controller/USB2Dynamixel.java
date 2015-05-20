@@ -9,6 +9,7 @@ import com.skoky.dynamixel.raw.Data;
 import com.skoky.dynamixel.raw.Packet;
 import com.skoky.dynamixel.raw.PacketV1;
 import com.skoky.dynamixel.servo.ax12a.ServoAX12A;
+import org.apache.commons.codec.binary.Hex;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,12 +59,26 @@ public class USB2Dynamixel implements Controller {
         } catch (SerialLinkError serialLinkError) {
             serialLinkError.printStackTrace();
         } catch (ResponseParsingException e) {
-            if (pingResponse[0]==0)
+            if (pingResponse==null || pingResponse.length==0 || pingResponse[0]==0)
                 log.info("No servo connected to bus");
             else
                 e.printStackTrace();
         }
         return servos;
+    }
+
+    @Override
+    public boolean resetServos() {
+        byte[] resetRequest = packet.buildReset();
+        byte[] resetResponse = new byte[0];
+        List<Servo> servos = new ArrayList<>();
+        try {
+            port.sendAndReceive(resetRequest,100);  // no response expected
+            return true;
+        } catch (SerialLinkError serialLinkError) {
+            serialLinkError.printStackTrace();
+            return false;
+        }
     }
 
     @Override

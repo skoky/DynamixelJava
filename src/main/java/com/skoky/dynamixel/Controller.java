@@ -11,6 +11,8 @@ public interface Controller {
 
     SerialPort getPort();
     List<Servo> listServos() ;
+    boolean resetServos();
+
 
     void setVerbose();
 }

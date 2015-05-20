@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.util.List;
 
+import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
 
 /**
@@ -43,5 +44,8 @@ public class USB2DynamixelTest {
         List<Servo> servos = controller.listServos();
         assertFalse(servos==null);
         assertFalse(servos.size()!=0);
+
+        boolean done = controller.resetServos();
+        assertEquals(true,done);
     }
 }

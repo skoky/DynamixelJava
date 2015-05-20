@@ -81,6 +81,11 @@ public class PacketV2 extends PacketCommon implements  Packet {
         return toByteArray(buffer);
     }
 
+    @Override
+    public byte[] buildReset() {
+        return new byte[0];
+    }
+
 
     @Override
     public List<Data> parse(byte[] data) {

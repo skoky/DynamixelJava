@@ -69,6 +69,11 @@ public class OpenCM implements Controller {
     }
 
     @Override
+    public boolean resetServos() {
+        return false;
+    }
+
+    @Override
     public void setVerbose() {
         log.setLevel(Level.ALL);
     }

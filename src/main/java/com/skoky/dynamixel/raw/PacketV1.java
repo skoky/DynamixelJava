@@ -64,6 +64,18 @@ public class PacketV1 extends PacketCommon implements Packet {
     }
 
     @Override
+    public byte[] buildReset() {
+        int[] buffer = new int[6];
+        buffer[0]= 0xFF; //header
+        buffer[1]= 0xFF; //header
+        buffer[2]= 0xFE; //servo ID
+        buffer[3]= 0x02;  // length
+        buffer[4]= 0x06;          // WRITE_DATA
+        buffer[5] = crc(buffer);    // CRC
+        return toByteArray(buffer);
+    }
+
+    @Override
     public List<Data> parse(byte[] p) throws ResponseParsingException {
         if (p==null || p.length==0) throw new ResponseParsingException("Null data");
         if (p[0]!=(byte)0xFF || p[1]!=(byte)0xFF) throw new ResponseParsingException("Not starting with 0xFF");
