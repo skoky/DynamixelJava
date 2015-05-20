@@ -1,20 +1,11 @@
 package com.skoky.dynamixel.controller;
 
 import com.skoky.dynamixel.Servo;
-import com.skoky.dynamixel.utils.FakeSerialPortV1;
-import org.junit.Before;
+import com.skoky.dynamixel.utils.FakeSerialPort;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertTrue;
@@ -26,9 +17,9 @@ public class FakeServoTest {
 
 
     @Test
-    public void testPing() throws IOException {
+    public void testV1() throws IOException {
 
-        USB2Dynamixel controller = new USB2Dynamixel(new FakeSerialPortV1());
+        USB2Dynamixel controller = new USB2Dynamixel(new FakeSerialPort("audit_1.log"));
 
         List<Servo> servos = controller.listServos();
         assertTrue(servos.size() == 1);
@@ -38,7 +29,20 @@ public class FakeServoTest {
         assertEquals(36, servo.getAlarmLed());
         assertEquals(0, servo.getAlarmShutdown());
         assertEquals(1, servo.getBaudRate());
+        assertEquals(1023, servo.getCCWAngleLimit());
+        assertEquals(0, servo.getCWAngleLimit());
+        assertEquals(200, servo.getGoalVelocity());
+        assertEquals(true, servo.setBaudrate(1));
+        assertEquals(true, servo.setGoalPosition(200));
 
+    }
 
+    @Test
+    public void testV2() throws IOException {
+
+//        OpenCM controller= new OpenCM(new FakeSerialPort("audit_2.log"));
+//
+//        List<Servo> servos = controller.listServos();
+//        assertTrue(servos.size() == 1);
     }
 }

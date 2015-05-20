@@ -16,14 +16,14 @@ import java.util.Map;
 /**
  * Created by skoky on 20.5.15.
  */
-public class FakeSerialPortV1 implements SerialPort {
+public class FakeSerialPort implements SerialPort {
 
 
     private final Map<String, String> responses;
 
-    public FakeSerialPortV1() throws IOException {
+    public FakeSerialPort(String filename) throws IOException {
 
-        List<String> lines = Files.readAllLines(Paths.get(getClass().getResource("audit_1.log").getFile()), StandardCharsets.UTF_8);
+        List<String> lines = Files.readAllLines(Paths.get(getClass().getResource(filename).getFile()), StandardCharsets.UTF_8);
         responses = new HashMap<>(0);
         for(String line: lines){
             String[] x = line.split("->");
@@ -49,5 +49,10 @@ public class FakeSerialPortV1 implements SerialPort {
             e.printStackTrace();
             return null;
         }
+    }
+
+    @Override
+    public byte[] sendAndReceive(byte[] p, long longSleep) throws SerialLinkError {
+        return sendAndReceive(p);
     }
 }
