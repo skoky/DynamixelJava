@@ -89,7 +89,7 @@ public class PortLinux implements SerialPort {
         log.fine("Serial writing:" + Hex.encodeHexString(data) + " size:" + result);
         if (result == -1) throw new SerialLinkError("Serial port not useful. Port:" + portName);
         try {
-            Thread.sleep(20);
+            Thread.sleep(sleep);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

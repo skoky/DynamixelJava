@@ -41,7 +41,7 @@ public class PingV2Script {
 
             int p = servo.getPresentPosition();
             System.out.println("Position:" + p);
-            int newP = p + 100;
+            int newP = p + 200;
             if (newP > 1000) newP = 1;
             System.out.println("New Position:" + newP);
             boolean isDone = servo.setGoalPosition(newP);
@@ -56,7 +56,7 @@ public class PingV2Script {
             p = servo.getPresentPosition();
             System.out.println("Position P:" + p);
 
-            servo.setGoalPositionAndWait(newP-100);
+            servo.setGoalPositionAndWait(newP-200);
 
             p = servo.getGoalPosition();
             System.out.println("Position G:" + p);
