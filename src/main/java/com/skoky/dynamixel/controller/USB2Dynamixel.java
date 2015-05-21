@@ -48,7 +48,7 @@ public class USB2Dynamixel implements Controller {
         byte[] pingResponse = new byte[0];
         List<Servo> servos = new ArrayList<>();
         try {
-            pingResponse = port.sendAndReceive(ping);
+            pingResponse = port.sendAndReceive(ping,100);
             List<Data> responses = packet.parse(pingResponse);
             if (responses != null)
                 for (Data d : responses) {

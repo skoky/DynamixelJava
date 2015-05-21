@@ -88,4 +88,6 @@ public interface Servo {
     boolean setGoalVelocity(int velocity);
 
     int getHWStatusError();
+
+    boolean setGoalPositionAndWait(int pos);
 }

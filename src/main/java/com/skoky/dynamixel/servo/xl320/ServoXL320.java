@@ -10,6 +10,7 @@ import com.skoky.dynamixel.raw.Packet;
 import com.skoky.dynamixel.raw.PacketV2;
 import com.skoky.dynamixel.servo.LedColor;
 import com.skoky.dynamixel.servo.ReturnLevel;
+import com.skoky.dynamixel.servo.ServoCommon;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -17,7 +18,7 @@ import java.util.logging.Logger;
 /**
  * Created by skoky on 5.5.15.
  */
-public class ServoXL320 implements Servo {
+public class ServoXL320 extends ServoCommon implements Servo {
     Logger log = Logger.getGlobal();
     private final int servoId;
     private final Controller controller;
@@ -186,6 +187,7 @@ public class ServoXL320 implements Servo {
             return -1;
         }
     }
+
 
     @Override
     public int getModelNumber() {
