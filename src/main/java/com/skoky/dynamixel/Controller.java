@@ -13,6 +13,9 @@ public interface Controller {
     List<Servo> listServos() ;
     boolean resetServos();
 
+    boolean rebootDevice();
 
     void setVerbose();
+
+    void setServoList(List<Servo> servos);
 }

@@ -1,13 +1,14 @@
 package com.skoky.dynamixel.raw;
 
+import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.err.ResponseParsingException;
+import com.skoky.dynamixel.servo.xl320.Register;
 import org.apache.commons.codec.binary.Hex;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -131,6 +132,63 @@ public class PacketV2 extends PacketCommon implements  Packet {
     @Override
     public Data parseFirst(byte[] p) throws ResponseParsingException {
         return null;
+    }
+
+    @Override
+    public byte[] buildReboot() {
+        int[] buffer = new int[10];
+        buffer[0] = 0xFF;
+        buffer[1] = 0xFF;
+        buffer[2] = 0xFD;
+        buffer[3] = 0;
+        buffer[4] = 0xFE;
+        buffer[5] = 0x3;       // length L
+        buffer[6] = 0;    // length H
+        buffer[7] = 0x03;    // WRITE
+        int crc = crc16(buffer,buffer.length-2);
+        buffer[buffer.length-2]=(byte) crc;           // CRC L
+        buffer[buffer.length-1]=(byte)(crc>>8);       // CRC H
+        return toByteArray(buffer);
+    }
+
+    @Override
+    public byte[] buildBulkWriteData(List<Servo> servos, int... params) {
+        int[] buffer = new int[10+params.length];
+        buffer[0] = 0xFF;
+        buffer[1] = 0xFF;
+        buffer[2] = 0xFD;
+        buffer[3] = 0;
+        buffer[4] = 0xFE;
+        buffer[5] = 3+params.length;    // length L
+        buffer[6] = 0;    // length H
+        buffer[7] = 0x93; // bulk write
+        for(int i=0;i<params.length;i++) {
+            buffer[8+i] = params[i];
+        }
+        int crc = crc16(buffer,buffer.length-2);
+        buffer[buffer.length-2]=(byte) crc;           // CRC L
+        buffer[buffer.length-1]=(byte)(crc>>8);       // CRC H
+        return toByteArray(buffer);
+    }
+
+
+    public byte[] buildBulkReadData(List<Servo> servos, int... params) {
+        int[] buffer = new int[10+params.length];
+        buffer[0] = 0xFF;
+        buffer[1] = 0xFF;
+        buffer[2] = 0xFD;
+        buffer[3] = 0;
+        buffer[4] = 0xFE;
+        buffer[5] = 3+params.length;    // length L
+        buffer[6] = 0;    // length H
+        buffer[7] = 0x92; // bulk read
+        for(int i=0;i<params.length;i++) {
+            buffer[8+i] = params[i];
+        }
+        int crc = crc16(buffer,buffer.length-2);
+        buffer[buffer.length-2]=(byte) crc;           // CRC L
+        buffer[buffer.length-1]=(byte)(crc>>8);       // CRC H
+        return toByteArray(buffer);
     }
 
     private int[] toIntArray(byte[] data) {

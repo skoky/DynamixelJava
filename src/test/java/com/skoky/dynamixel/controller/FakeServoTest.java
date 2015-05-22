@@ -42,7 +42,7 @@ public class FakeServoTest {
 
 //        OpenCM controller= new OpenCM(new FakeSerialPort("audit_2.log"));
 //
-//        List<Servo> servos = controller.listServos();
-//        assertTrue(servos.size() == 1);
+//        List<Servo> servoList = controller.listServos();
+//        assertTrue(servoList.size() == 1);
     }
 }

@@ -1,7 +1,10 @@
 package com.skoky.dynamixel.raw;
 
+import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.err.ErrorResponseV1Exception;
 import com.skoky.dynamixel.err.ResponseParsingException;
+import com.skoky.dynamixel.servo.LedColor;
+import com.skoky.dynamixel.servo.xl320.Register;
 
 import java.util.List;
 
@@ -20,4 +23,7 @@ public interface Packet {
     Data parseFirst(byte[] p) throws ResponseParsingException, ErrorResponseV1Exception;
 
 
+    byte[] buildReboot();
+
+    byte[] buildBulkWriteData(List<Servo> servos, int... params);
 }

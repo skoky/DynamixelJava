@@ -523,4 +523,11 @@ public class ServoXL320 extends ServoCommon implements Servo {
             return first;
     }
 
+    @Override
+    public String toString() {
+        return "ServoXL320{" +
+                "servoId=" + servoId +
+                ", controller=" + controller.getPort() +
+                '}';
+    }
 }

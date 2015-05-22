@@ -1,5 +1,6 @@
 package com.skoky.dynamixel.raw;
 
+import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.err.ErrorResponseV1Exception;
 import com.skoky.dynamixel.err.ResponseParsingException;
 import java.util.ArrayList;
@@ -107,6 +108,16 @@ public class PacketV1 extends PacketCommon implements Packet {
         Data one = d.get(0);
         if (one.error!=0) throw new ErrorResponseV1Exception(one.error);
         return one;
+    }
+
+    @Override
+    public byte[] buildReboot() {
+        return null;  // TODO implement
+    }
+
+    @Override
+    public byte[] buildBulkWriteData(List<Servo> servos, int... params) {
+        return new byte[0];
     }
 
     private int crc(int[] buffer, int... params) {

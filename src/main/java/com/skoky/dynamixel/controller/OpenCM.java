@@ -8,6 +8,8 @@ import com.skoky.dynamixel.port.SerialPort;
 import com.skoky.dynamixel.raw.Data;
 import com.skoky.dynamixel.raw.Packet;
 import com.skoky.dynamixel.raw.PacketV2;
+import com.skoky.dynamixel.servo.LedColor;
+import com.skoky.dynamixel.servo.ReturnLevel;
 import com.skoky.dynamixel.servo.xl320.ServoXL320;
 
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ public class OpenCM implements Controller {
 
     private final Packet packet;
     protected final SerialPort port;
+    public ServosV2 servoList;
 
     public OpenCM(SerialPort port) {
         packet = new PacketV2();
@@ -70,7 +73,15 @@ public class OpenCM implements Controller {
 
     @Override
     public boolean resetServos() {
+        //TBD
         return false;
+    }
+
+    @Override
+    public boolean rebootDevice() {
+        byte[] rebootRequest = packet.buildReboot();
+        port.sendAndReceive(rebootRequest,0);
+        return true;
     }
 
     @Override
@@ -79,9 +90,17 @@ public class OpenCM implements Controller {
     }
 
     @Override
+    public void setServoList(List<Servo> servos) {
+        servoList = new ServosV2();
+        servoList.setServos(servos, port);
+
+    }
+
+    @Override
     public String toString() {
         return "OpenCM{" +
                 ", port=" + port +
                 '}';
     }
+
 }

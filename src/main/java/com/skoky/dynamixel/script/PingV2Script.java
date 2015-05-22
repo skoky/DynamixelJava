@@ -6,7 +6,6 @@ import com.skoky.dynamixel.err.SerialLinkError;
 import com.skoky.dynamixel.port.SerialPortFactory;
 import com.skoky.dynamixel.servo.LedColor;
 
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -97,10 +96,12 @@ public class PingV2Script {
             System.out.println("Torque limit:" + servo.getTorqueLimit());
             System.out.println("Present load:" + servo.getPresentLoad());
             System.out.println("HW error:" + servo.getHWStatusError());
-            servo.setAlarmShutdown(0);
+//            servo.setAlarmShutdown(0);
             System.out.println("Alarm shutdown:" + servo.getAlarmShutdown());
 
+            controller.rebootDevice();
         }
+
         controller.getPort().close();
 
     }

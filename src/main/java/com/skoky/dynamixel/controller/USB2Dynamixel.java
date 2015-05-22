@@ -9,7 +9,6 @@ import com.skoky.dynamixel.raw.Data;
 import com.skoky.dynamixel.raw.Packet;
 import com.skoky.dynamixel.raw.PacketV1;
 import com.skoky.dynamixel.servo.ax12a.ServoAX12A;
-import org.apache.commons.codec.binary.Hex;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,8 +81,19 @@ public class USB2Dynamixel implements Controller {
     }
 
     @Override
+    public boolean rebootDevice() {
+        // TBD
+        return false;
+    }
+
+    @Override
     public void setVerbose() {
         log.setLevel(Level.ALL);
+    }
+
+    @Override
+    public void setServoList(List<Servo> servos) {
+
     }
 
 
