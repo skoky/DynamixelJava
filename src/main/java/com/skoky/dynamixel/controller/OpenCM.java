@@ -2,6 +2,7 @@ package com.skoky.dynamixel.controller;
 
 import com.skoky.dynamixel.Controller;
 import com.skoky.dynamixel.Servo;
+import com.skoky.dynamixel.ServoGroup;
 import com.skoky.dynamixel.err.ResponseParsingException;
 import com.skoky.dynamixel.err.SerialLinkError;
 import com.skoky.dynamixel.port.SerialPort;
@@ -27,7 +28,7 @@ public class OpenCM implements Controller {
 
     private final Packet packet;
     protected final SerialPort port;
-    public ServosV2 servoList;
+    public ServoGroup servoList;
 
     public OpenCM(SerialPort port) {
         packet = new PacketV2();
@@ -75,8 +76,9 @@ public class OpenCM implements Controller {
 
     @Override
     public boolean resetServos() {
-        //TBD
-        return false;
+        byte[] resetPacket = packet.buildPacket(Instruction.FACTORY_RESET, BROADCAST);
+        port.sendAndReceive(resetPacket,0);
+        return true;
     }
 
     @Override

@@ -23,12 +23,15 @@ public class PingV2Script {
 
         System.out.println("Servos on bus:" + servos.size());
 
+        System.out.println("Factory reset...");
+                controller.resetServos();
+
         Iterator<Servo> servosIter = servos.iterator();
 
         while(servosIter.hasNext()) {
             Servo servo = servosIter.next();
             System.out.println("Joint mode:" + servo.isJointMode());
-            System.out.println("Wheel mode:" + servo.isWheelMode());
+//            System.out.println("Wheel mode:" + servo.isWheelMode());
 
             servo.setWheelMode();
             System.out.println("Joint mode:" + servo.isJointMode());
@@ -38,6 +41,9 @@ public class PingV2Script {
             System.out.println("Joint mode:" + servo.isJointMode());
             System.out.println("Wheel mode:" + servo.isWheelMode());
 
+            System.out.println("Max torque:"+servo.getMaxTorque());
+            servo.setMaxTorque(500);
+            System.out.println("Max torque:"+servo.getMaxTorque());
             int p = servo.getPresentPosition();
             System.out.println("Position:" + p);
             int newP = p + 100;
@@ -99,8 +105,11 @@ public class PingV2Script {
 //            servo.setAlarmShutdown(0);
             System.out.println("Alarm shutdown:" + servo.getAlarmShutdown());
 
-            controller.rebootDevice();
+
         }
+
+        controller.rebootDevice();
+
 
         controller.getPort().close();
 

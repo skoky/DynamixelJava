@@ -1,7 +1,9 @@
 package com.skoky.dynamixel.controller;
 
 import com.skoky.dynamixel.Servo;
+import com.skoky.dynamixel.ServoGroup;
 import com.skoky.dynamixel.port.SerialPort;
+import com.skoky.dynamixel.raw.Data;
 import com.skoky.dynamixel.raw.Instruction;
 import com.skoky.dynamixel.raw.PacketV2;
 import com.skoky.dynamixel.servo.LedColor;
@@ -9,23 +11,25 @@ import com.skoky.dynamixel.servo.ReturnLevel;
 import com.skoky.dynamixel.servo.xl320.Register;
 import org.apache.commons.codec.binary.Hex;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by skoky on 22.5.15.
  */
 
-public class ServosV2 implements Servo {
+public class ServosV2 implements ServoGroup {
     private int[] servos;
     private SerialPort port;
     private int cachedId;
 
     @Override
-    public int getModelNumber() {
+    public Map<Integer,Integer> getModelNumber() {
         return buildSyncRead(Register.MODEL_NUMBER);
     }
 
-    private int buildSyncRead(Register r) {
+    private Map<Integer,Integer> buildSyncRead(Register r) {
         int[] data=new int[servos.length+4];
         data[0]=r.getAddress();
         data[2]=r.getSize();
@@ -34,7 +38,12 @@ public class ServosV2 implements Servo {
         byte[] request = new PacketV2().buildMultiPacket(Instruction.SYNC_READ, data);
         byte[] response = port.sendAndReceive(request,500);
         System.out.println("Model number sync:"+Hex.encodeHexString(response));
-        return 0;
+        List<Data> result = new PacketV2().parse(response);
+        HashMap<Integer,Integer> resultMap = new HashMap<>();
+        for(Data d : result) {
+            resultMap.put(d.servoId,d.result);
+        }
+        return resultMap;
     }
 
     @Override
@@ -178,31 +187,34 @@ public class ServosV2 implements Servo {
     }
 
     private boolean buildSyncWrite(int[] servos, Register r, int v) {
-        int[] data = new int[4+servos.length*2];
+        int m = r.getSize()==1? 2 : 3;  // single or two bytes data
+        int[] data = new int[4+servos.length*m];
         data[0]=r.getAddress();
         data[2]=r.getSize();
         for(int i=0;i<servos.length;i++) {
-            data[4+i*2]=servos[i];
-            data[4+i*2+1]=v;
+            data[4+i*m]=servos[i];
+            data[4+i*m+1]=v%256;
+            if (m==3) data[4+i*m+2]=v/256;
         }
         byte[] request = new PacketV2().buildMultiPacket(Instruction.SYNC_WRITE, data);
         byte[] response = port.sendAndReceive(request,200);
-        System.out.println("Sync write response:"+ Hex.encodeHexString(response));
+        System.out.println("Set position request:"+ Hex.encodeHexString(request));
         return true;
 
     }
 
     @Override
-    public LedColor getLedOn() {
-        byte[] request = new PacketV2().buildPacket(Instruction.SYNC_READ, Register.LED_ON_OFF.getAddress(), 0, Register.LED_ON_OFF.getSize(), 0, 1, 2, 3);
-        byte[] response = port.sendAndReceive(request,100);
-        System.out.println("LED Sync response:"+ Hex.encodeHexString(response));
-        return null;
+    public Map<Integer,LedColor> getLedOn() {
+        Map<Integer, Integer> result = buildSyncRead(Register.LED_ON_OFF);
+        Map<Integer,LedColor> resultMap = new HashMap<>();
+        for(Integer r : result.keySet())
+            resultMap.put(r,LedColor.getById(result.get(r)));
+        return resultMap;
     }
 
     @Override
     public boolean setGoalPosition(int position) {
-        return false;
+        return buildSyncWrite(servos,Register.GOAL_POSITION,position);
     }
 
     @Override
@@ -231,8 +243,8 @@ public class ServosV2 implements Servo {
     }
 
     @Override
-    public int getPresentPosition() {
-        return 0;
+    public Map<Integer, Integer> getPresentPosition() {
+        return buildSyncRead(Register.CURRENT_POSITION);
     }
 
     @Override

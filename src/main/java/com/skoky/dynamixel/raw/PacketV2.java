@@ -51,6 +51,8 @@ public class PacketV2 extends PacketCommon implements  Packet {
                 else
                     result.params[i-1] = Byte.toUnsignedInt(data[8 + i + offset]);
             }
+            if (result.params.length>=1) result.result=result.params[0];
+            if (result.params.length>=2) result.result+=result.params[1]*256;
             results.add(result);
             if (data.length<=6+length+offset+1)
                 break;

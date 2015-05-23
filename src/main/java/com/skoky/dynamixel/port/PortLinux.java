@@ -80,7 +80,7 @@ public class PortLinux implements SerialPort {
 
     @Override
     public byte[] sendAndReceive(byte[] data) throws SerialLinkError {
-        return sendAndReceive(data,20);
+        return sendAndReceive(data,50);
     }
     @Override
     public byte[] sendAndReceive(byte[] data, long sleep) throws SerialLinkError {

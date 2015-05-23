@@ -1,5 +1,7 @@
 package com.skoky.dynamixel.servo;
 
+import java.util.Map;
+
 /**
  * Created by skokan on 29.4.15.
  */
