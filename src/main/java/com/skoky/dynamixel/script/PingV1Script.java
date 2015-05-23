@@ -20,7 +20,7 @@ public class PingV1Script {
 
 
         Controller controller = new USB2Dynamixel(SerialPortFactory.get("/dev/ttyUSB0"));
-
+        controller.setVerbose();
         PortLinux p = (PortLinux) controller.getPort();
         p.setRecordFile("src/test/resources/audit.log");
         System.out.println("Servos:" + Arrays.toString(controller.listServos().toArray()));

@@ -20,12 +20,15 @@ public class PingV2BulkScript {
 
 
         OpenCM controller = new OpenCM(SerialPortFactory.get("/dev/ttyACM0"));
-        controller.setVerbose();
+//        controller.setVerbose();
         List<Servo> servos = controller.listServos();
 
         System.out.println("Servos on bus:" + servos.size());
 
         Iterator<Servo> servosIter = servos.iterator();
+
+        controller.resetServos();
+        Thread.sleep(500);
 
         while(servosIter.hasNext()) {
             Servo servo = servosIter.next();
@@ -47,9 +50,22 @@ public class PingV2BulkScript {
         Map<Integer,Integer> positions = controller.servoList.getPresentPosition();
         positions.entrySet().stream().forEach(System.out::println);
 
+        controller.servoList.setGoalVelocity(200);
+        Map<Integer, Integer> velos = controller.servoList.getGoalVelocity();
+        velos.entrySet().stream().forEach(System.out::println);
+
         controller.servoList.setGoalPosition(400);
         Thread.sleep(500);
         controller.servoList.setGoalPosition(500);
+
+        controller.servoList.setMaxTorque(450);
+        Map<Integer, Integer> torques = controller.servoList.getMaxTorque();
+        torques.entrySet().stream().forEach(System.out::println);
+
+        controller.servoList.setCCWAngleLimit(999);
+        Thread.sleep(200);
+        Map<Integer,Integer> limits = controller.servoList.getCCWAngleLimit();
+        limits.entrySet().stream().forEach(System.out::println);
 
         controller.servoList.setLedOn(LedColor.OFF);
 

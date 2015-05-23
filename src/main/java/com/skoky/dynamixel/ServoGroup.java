@@ -29,7 +29,7 @@ public interface ServoGroup {
     int getCWAngleLimit();
 
     boolean setCCWAngleLimit(int limit);
-    int getCCWAngleLimit();
+    Map<Integer, Integer> getCCWAngleLimit();
 
     boolean setTemperatureLimit(int limit);
     int getTemperatureLimit();
@@ -41,7 +41,7 @@ public interface ServoGroup {
     float getHighestLimitVoltage();
 
     boolean setMaxTorque(int torqueLimit);
-    int getMaxTorque();
+    Map<Integer, Integer> getMaxTorque();
 
     void setReturnLevel(ReturnLevel level);
     ReturnLevel getReturnLevel();
@@ -64,7 +64,7 @@ public interface ServoGroup {
     int getGoalPosition();
 
     boolean setMovingSpeed(int speed);
-    int getMovingSpeed();
+    Map<Integer, Integer> getMovingSpeed();
 
     boolean setTorqueLimit(int limit);
     int getTorqueLimit();
@@ -88,7 +88,7 @@ public interface ServoGroup {
     boolean setWheelMode();
     boolean setJointMode();
 
-    int getGoalVelocity();
+    Map<Integer, Integer> getGoalVelocity();
     boolean setGoalVelocity(int velocity);
 
     int getHWStatusError();

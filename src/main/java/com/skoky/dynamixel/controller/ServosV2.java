@@ -36,8 +36,9 @@ public class ServosV2 implements ServoGroup {
         for(int i=0;i<servos.length;i++)
             data[4+i]=servos[i];
         byte[] request = new PacketV2().buildMultiPacket(Instruction.SYNC_READ, data);
+        System.out.println("Sync read request:"+Hex.encodeHexString(request));
         byte[] response = port.sendAndReceive(request,500);
-        System.out.println("Model number sync:"+Hex.encodeHexString(response));
+        System.out.println("Sync read response:"+Hex.encodeHexString(response));
         List<Data> result = new PacketV2().parse(response);
         HashMap<Integer,Integer> resultMap = new HashMap<>();
         for(Data d : result) {
@@ -93,12 +94,12 @@ public class ServosV2 implements ServoGroup {
 
     @Override
     public boolean setCCWAngleLimit(int limit) {
-        return false;
+        return buildSyncWrite(Register.CCW_ANGLE_LIMIT,limit);
     }
 
     @Override
-    public int getCCWAngleLimit() {
-        return 0;
+    public Map<Integer, Integer> getCCWAngleLimit() {
+        return buildSyncRead(Register.CCW_ANGLE_LIMIT);
     }
 
     @Override
@@ -133,12 +134,12 @@ public class ServosV2 implements ServoGroup {
 
     @Override
     public boolean setMaxTorque(int torqueLimit) {
-        return false;
+        return buildSyncWrite(Register.MAX_TORQUE,torqueLimit);
     }
 
     @Override
-    public int getMaxTorque() {
-        return 0;
+    public Map<Integer, Integer> getMaxTorque() {
+        return buildSyncRead(Register.MAX_TORQUE);
     }
 
     @Override
@@ -183,10 +184,10 @@ public class ServosV2 implements ServoGroup {
 
     @Override
     public boolean setLedOn(LedColor color) {
-        return buildSyncWrite(servos, Register.LED_ON_OFF,color.getId());
+        return buildSyncWrite(Register.LED_ON_OFF,color.getId());
     }
 
-    private boolean buildSyncWrite(int[] servos, Register r, int v) {
+    private boolean buildSyncWrite(Register r, int v) {
         int m = r.getSize()==1? 2 : 3;  // single or two bytes data
         int[] data = new int[4+servos.length*m];
         data[0]=r.getAddress();
@@ -198,7 +199,7 @@ public class ServosV2 implements ServoGroup {
         }
         byte[] request = new PacketV2().buildMultiPacket(Instruction.SYNC_WRITE, data);
         byte[] response = port.sendAndReceive(request,200);
-        System.out.println("Set position request:"+ Hex.encodeHexString(request));
+        System.out.println("Sync write request " +r + ": " + Hex.encodeHexString(request));
         return true;
 
     }
@@ -214,7 +215,7 @@ public class ServosV2 implements ServoGroup {
 
     @Override
     public boolean setGoalPosition(int position) {
-        return buildSyncWrite(servos,Register.GOAL_POSITION,position);
+        return buildSyncWrite(Register.GOAL_POSITION,position);
     }
 
     @Override
@@ -224,12 +225,12 @@ public class ServosV2 implements ServoGroup {
 
     @Override
     public boolean setMovingSpeed(int speed) {
-        return false;
+        return buildSyncWrite(Register.GOAL_VELOCITY,speed);
     }
 
     @Override
-    public int getMovingSpeed() {
-        return 0;
+    public Map<Integer, Integer> getMovingSpeed() {
+        return buildSyncRead(Register.PRESENT_SPEED);
     }
 
     @Override
@@ -318,13 +319,13 @@ public class ServosV2 implements ServoGroup {
     }
 
     @Override
-    public int getGoalVelocity() {
-        return 0;
+    public Map<Integer, Integer> getGoalVelocity() {
+        return buildSyncRead(Register.GOAL_VELOCITY);
     }
 
     @Override
     public boolean setGoalVelocity(int velocity) {
-        return false;
+        return buildSyncWrite(Register.GOAL_VELOCITY,velocity);
     }
 
     @Override
