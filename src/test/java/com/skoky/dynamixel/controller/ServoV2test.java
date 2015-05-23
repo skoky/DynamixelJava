@@ -44,6 +44,11 @@ public class ServoV2test {
                 }
                 return null;
             }
+
+            @Override
+            public void setRecordFile(String s) {
+
+            }
         });
 
         controller.setServoList(Arrays.asList(new Servo[]{new ServoXL320(1, controller), new ServoXL320(2, controller)}));
@@ -76,6 +81,11 @@ public class ServoV2test {
                     e.printStackTrace();
                 }
                 return null;
+            }
+
+            @Override
+            public void setRecordFile(String s) {
+
             }
         });
 

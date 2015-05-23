@@ -3,7 +3,8 @@ package com.skoky.dynamixel.script;
 import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.controller.OpenCM;
 import com.skoky.dynamixel.err.SerialLinkError;
-import com.skoky.dynamixel.port.SerialPortFactory;
+import com.skoky.dynamixel.port.SerialPort;
+import com.skoky.dynamixel.port.SerialPortException;
 import com.skoky.dynamixel.servo.LedColor;
 
 import java.util.Iterator;
@@ -14,10 +15,10 @@ import java.util.List;
  */
 public class TrackPositionV2Script {
 
-    public static void main(String[] args) throws SerialLinkError, InterruptedException {
+    public static void main(String[] args) throws InterruptedException, SerialPortException {
 
 
-        OpenCM controller = new OpenCM(SerialPortFactory.get("/dev/ttyACM0"));
+        OpenCM controller = new OpenCM(SerialPort.getPort("/dev/ttyACM0"));
 //        controller.setVerbose();
         List<Servo> servos = controller.listServos();
 

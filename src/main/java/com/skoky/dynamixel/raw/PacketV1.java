@@ -2,6 +2,7 @@ package com.skoky.dynamixel.raw;
 
 import com.skoky.dynamixel.err.ErrorResponseV1Exception;
 import com.skoky.dynamixel.err.ResponseParsingException;
+import org.apache.commons.codec.binary.Hex;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,26 +100,31 @@ public class PacketV1 extends PacketCommon implements Packet {
     @Override
     public List<Data> parse(byte[] p) throws ResponseParsingException {
         if (p==null || p.length==0) throw new ResponseParsingException("Null data");
-        if (p[0]!=(byte)0xFF || p[1]!=(byte)0xFF) throw new ResponseParsingException("Not starting with 0xFF");
-        Data data = new Data(TYPES.NONE_V1);    // packet name not defined in V1
-        data.servoId=p[2];
-        data.error = p[4];
-        int length = p[3];
-        int sum = data.servoId + length + data.error;
-        data.params = new int[(length-2)];
-        for(int i=5;i<(5+length-2);i++) {
-            data.params[i-5]=Byte.toUnsignedInt(p[i]);
-            sum+=data.params[i-5];
-        }
-        int calcCrc = (255 - ((sum) % 256));
-//        calcCrc = crcResponse(p);
-        int crc = Byte.toUnsignedInt(p[length+3]);
-        if ( crc !=calcCrc)
-            throw new ResponseParsingException("CRC not the same! Calculated:"+calcCrc + " expected:" + crc);
-        if (data.params.length>0) data.result=data.params[0];
-        if (data.params.length==2) data.result+=data.params[1]*256;
+        if (p[0]!=(byte)0xFF || p[1]!=(byte)0xFF) throw new ResponseParsingException("Not starting with 0xFF. Data:"+ Hex.encodeHexString(p));
         List list = new ArrayList<Data>();
-        list.add(data);
+        int offset=0;
+        while(true) {
+            if (p[offset]!=(byte)0xFF || p[offset+1]!=(byte)0xFF) break;
+            Data data = new Data(TYPES.NONE_V1);    // packet name not defined in V1
+            data.servoId = p[2+offset];
+            data.error = p[4+offset];
+            int length = p[3+offset];
+            int sum = data.servoId + length + data.error;
+            data.params = new int[(length - 2)];
+            for (int i = 5; i < (5 + length - 2); i++) {
+                data.params[i - 5] = Byte.toUnsignedInt(p[i+offset]);
+                sum += data.params[i - 5];
+            }
+            int calcCrc = (255 - ((sum) % 256));
+            int crc = Byte.toUnsignedInt(p[length +3+offset]);
+            if (crc != calcCrc)
+                throw new ResponseParsingException("CRC not the same! Calculated:" + calcCrc + " expected:" + crc);
+            if (data.params.length > 0) data.result = data.params[0];
+            if (data.params.length == 2) data.result += data.params[1] * 256;
+            list.add(data);
+            offset+=length+4;
+            if (offset>=p.length) break;
+        }
         return list;
     }
 

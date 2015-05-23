@@ -23,9 +23,7 @@ public class USB2DynamixelTest {
 
         SerialPort port = new SerialPort() {
             @Override
-            public void close() {
-
-            }
+            public void close() {}
 
             @Override
             public byte[] sendAndReceive(byte[] p) {
@@ -35,6 +33,11 @@ public class USB2DynamixelTest {
             @Override
             public byte[] sendAndReceive(byte[] p, long longSleep) throws SerialLinkError {
                 return new byte[0];
+            }
+
+            @Override
+            public void setRecordFile(String s) {
+
             }
         };
         USB2Dynamixel controller = new USB2Dynamixel(port);

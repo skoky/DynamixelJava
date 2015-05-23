@@ -55,4 +55,9 @@ public class FakeSerialPort implements SerialPort {
     public byte[] sendAndReceive(byte[] p, long longSleep) throws SerialLinkError {
         return sendAndReceive(p);
     }
+
+    @Override
+    public void setRecordFile(String s) {
+
+    }
 }

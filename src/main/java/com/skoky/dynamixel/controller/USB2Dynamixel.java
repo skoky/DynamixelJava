@@ -47,11 +47,11 @@ public class USB2Dynamixel implements Controller {
         byte[] pingResponse = new byte[0];
         List<Servo> servos = new ArrayList<>();
         try {
-            pingResponse = port.sendAndReceive(ping,100);
+            pingResponse = port.sendAndReceive(ping,500);
             List<Data> responses = packet.parse(pingResponse);
             if (responses != null)
                 for (Data d : responses) {
-                    System.out.println(d.toString());
+//                    System.out.println(d.toString());
                     servos.add(new ServoAX12A(d.servoId, this));
                 }
         } catch (SerialLinkError serialLinkError) {
@@ -81,7 +81,8 @@ public class USB2Dynamixel implements Controller {
 
     @Override
     public boolean rebootDevice() {
-        // TBD
+        byte[] rebootPacket = packet.buildPacket(Instruction.REBOOT,BRODCAST);
+        port.sendAndReceive(rebootPacket,100);
         return false;
     }
 

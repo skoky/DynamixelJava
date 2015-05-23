@@ -34,6 +34,11 @@ public class OpenCMTest {
             public byte[] sendAndReceive(byte[] p, long longSleep) throws SerialLinkError {
                 return new byte[0];
             }
+
+            @Override
+            public void setRecordFile(String s) {
+
+            }
         };
         OpenCM controller = new OpenCM(port);
         SerialPort p = controller.getPort();

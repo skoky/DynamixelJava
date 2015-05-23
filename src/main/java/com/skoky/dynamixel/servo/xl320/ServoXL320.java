@@ -5,6 +5,7 @@ import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.err.ErrorResponseV2Exception;
 import com.skoky.dynamixel.err.ResponseParsingException;
 import com.skoky.dynamixel.err.SerialLinkError;
+import com.skoky.dynamixel.port.SerialPortException;
 import com.skoky.dynamixel.raw.Data;
 import com.skoky.dynamixel.raw.Instruction;
 import com.skoky.dynamixel.raw.Packet;
@@ -468,7 +469,7 @@ public class ServoXL320 extends ServoCommon implements Servo {
 
 
 
-    int sendReadCommand(Register r) throws SerialLinkError, ResponseParsingException {
+    int sendReadCommand(Register r) throws ResponseParsingException, SerialPortException {
         Packet p = new PacketV2();
         int rLow = r.getAddress();
         int rHigh = r.getAddress() / 256;

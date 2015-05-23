@@ -5,6 +5,7 @@ import com.skoky.dynamixel.err.ResponseParsingException;
 import com.skoky.dynamixel.raw.Data;
 import com.skoky.dynamixel.raw.PacketCommon;
 import com.skoky.dynamixel.raw.PacketV1;
+import junit.framework.TestCase;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
 import org.junit.Assert;
@@ -139,4 +140,21 @@ public class PacketV1Test {
         new PacketV1().parse(data);
     }
 
+    @Test
+    public void testServoList() throws DecoderException {
+        byte[] data = Hex.decodeHex("ffff020200fbffff030200faffff040200f9".toCharArray());
+        try {
+            List<Data> p = new PacketV1().parse(data);
+            assertEquals(3, p.size());
+            Data s = p.get(0);
+            s.servoId=1;
+            s = p.get(1);
+            s.servoId=2;
+            s = p.get(2);
+            s.servoId=3;
+
+        } catch (ResponseParsingException e) {
+            e.printStackTrace();
+        }
+    }
 }
