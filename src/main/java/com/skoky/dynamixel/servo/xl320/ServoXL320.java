@@ -6,6 +6,7 @@ import com.skoky.dynamixel.err.ErrorResponseV2Exception;
 import com.skoky.dynamixel.err.ResponseParsingException;
 import com.skoky.dynamixel.err.SerialLinkError;
 import com.skoky.dynamixel.raw.Data;
+import com.skoky.dynamixel.raw.Instruction;
 import com.skoky.dynamixel.raw.Packet;
 import com.skoky.dynamixel.raw.PacketV2;
 import com.skoky.dynamixel.servo.LedColor;
@@ -20,7 +21,6 @@ import java.util.logging.Logger;
  */
 public class ServoXL320 extends ServoCommon implements Servo {
     Logger log = Logger.getGlobal();
-    private final int servoId;
     private final Controller controller;
 
     public ServoXL320(int servoId, Controller controller) {
@@ -188,7 +188,6 @@ public class ServoXL320 extends ServoCommon implements Servo {
         }
     }
 
-
     @Override
     public int getModelNumber() {
         try {
@@ -213,7 +212,8 @@ public class ServoXL320 extends ServoCommon implements Servo {
     @Override
     public int getId() {
         try {
-            return sendReadCommand(Register.ID);
+            servoId = sendReadCommand(Register.ID);
+            return servoId;
         } catch (ResponseParsingException e) {
             log.severe(e.getMessage());
             return -1;
@@ -472,7 +472,7 @@ public class ServoXL320 extends ServoCommon implements Servo {
         Packet p = new PacketV2();
         int rLow = r.getAddress();
         int rHigh = r.getAddress() / 256;
-        byte[] posCommand = p.buildReadData(servoId,rLow,rHigh,r.getSize(),0);
+        byte[] posCommand = p.buildPacket(Instruction.READ, servoId, rLow, rHigh, r.getSize(), 0);
         byte[] response = controller.getPort().sendAndReceive(posCommand);
         List<Data> d = p.parse(response);
         if (d.size()!=1)
@@ -511,9 +511,9 @@ public class ServoXL320 extends ServoCommon implements Servo {
         Packet p = new PacketV2();
         byte[] posCommand = new byte[0];
         if (r.getSize() == 1)
-            posCommand = p.buildWriteData(servoId, rLow, rHigh, limit);
+            posCommand = p.buildPacket(Instruction.WRITE,servoId, rLow, rHigh, limit);
         else if (r.getSize() == 2)
-            posCommand = p.buildWriteData(servoId, rLow, rHigh, limit%256,limit/256);
+            posCommand = p.buildPacket(Instruction.WRITE, servoId, rLow, rHigh, limit % 256, limit / 256);
         byte[] response = controller.getPort().sendAndReceive(posCommand);
         List<Data> d = p.parse(response);
         Data first = d.get(0);

@@ -33,11 +33,13 @@ public class PingV2BulkScript {
 
         Thread.sleep(2000);
 
+
         controller.setServoList(servos);
 
         controller.servoList.getModelNumber();
         controller.servoList.getLedOn();
         controller.servoList.setLedOn(LedColor.OFF);
+
 
         controller.getPort().close();
 

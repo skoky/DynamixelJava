@@ -2,6 +2,7 @@ package com.skoky.dynamixel.controller;
 
 import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.port.SerialPort;
+import com.skoky.dynamixel.raw.Instruction;
 import com.skoky.dynamixel.raw.PacketV2;
 import com.skoky.dynamixel.servo.LedColor;
 import com.skoky.dynamixel.servo.ReturnLevel;
@@ -15,16 +16,24 @@ import java.util.List;
  */
 
 public class ServosV2 implements Servo {
-    private List<Servo> servos;
+    private int[] servos;
     private SerialPort port;
+    private int cachedId;
 
     @Override
     public int getModelNumber() {
-        byte[] request = new PacketV2().buildBulkReadData(servos, 1, Register.MODEL_NUMBER.getAddress(), 0, Register.MODEL_NUMBER.getSize(), 0,
-                                                                  2, Register.MODEL_NUMBER.getAddress(), 0, Register.MODEL_NUMBER.getSize(), 0,
-                                                                  3, Register.MODEL_NUMBER.getAddress(), 0, Register.MODEL_NUMBER.getSize(), 0);
+        return buildSyncRead(Register.MODEL_NUMBER);
+    }
+
+    private int buildSyncRead(Register r) {
+        int[] data=new int[servos.length+4];
+        data[0]=r.getAddress();
+        data[2]=r.getSize();
+        for(int i=0;i<servos.length;i++)
+            data[4+i]=servos[i];
+        byte[] request = new PacketV2().buildMultiPacket(Instruction.SYNC_READ, data);
         byte[] response = port.sendAndReceive(request,500);
-        System.out.println("Model number:"+Hex.encodeHexString(response));
+        System.out.println("Model number sync:"+Hex.encodeHexString(response));
         return 0;
     }
 
@@ -165,24 +174,29 @@ public class ServosV2 implements Servo {
 
     @Override
     public boolean setLedOn(LedColor color) {
-        return buildBulkWrite(servos, Register.LED_ON_OFF,color);
+        return buildSyncWrite(servos, Register.LED_ON_OFF,color.getId());
     }
 
-    private boolean buildBulkWrite(List<Servo> servos, Register r, LedColor v) {
-        byte[] request = new PacketV2().buildBulkWriteData(servos, 1, 25,0,1,0,0,
-                                                                   2, 25,0,2,0,0,
-                                                                    3, 25,0,2,0,0);
+    private boolean buildSyncWrite(int[] servos, Register r, int v) {
+        int[] data = new int[4+servos.length*2];
+        data[0]=r.getAddress();
+        data[2]=r.getSize();
+        for(int i=0;i<servos.length;i++) {
+            data[4+i*2]=servos[i];
+            data[4+i*2+1]=v;
+        }
+        byte[] request = new PacketV2().buildMultiPacket(Instruction.SYNC_WRITE, data);
         byte[] response = port.sendAndReceive(request,200);
-        System.out.println("Bulk response:"+ Hex.encodeHexString(response));
+        System.out.println("Sync write response:"+ Hex.encodeHexString(response));
         return true;
 
     }
 
     @Override
     public LedColor getLedOn() {
-        byte[] request = new PacketV2().buildBulkReadData(servos,1, 25,0, 1,0);
-        byte[] response = port.sendAndReceive(request);
-        System.out.println("Bulk response:"+ Hex.encodeHexString(response));
+        byte[] request = new PacketV2().buildPacket(Instruction.SYNC_READ, Register.LED_ON_OFF.getAddress(), 0, Register.LED_ON_OFF.getSize(), 0, 1, 2, 3);
+        byte[] response = port.sendAndReceive(request,100);
+        System.out.println("LED Sync response:"+ Hex.encodeHexString(response));
         return null;
     }
 
@@ -311,8 +325,16 @@ public class ServosV2 implements Servo {
         return false;
     }
 
-    public void setServos(List<Servo> servos, SerialPort port) {
-        this.servos=servos;
+    @Override
+    public int getServoId() {
+        return 0;
+    }
+
+
+    public void setServos(List<Servo> servosList, SerialPort port) {
+        servos = new int[servosList.size()];
+        for(int i=0;i<servos.length;i++)
+            servos[i]=servosList.get(i).getServoId();
         this.port = port;
     }
 }

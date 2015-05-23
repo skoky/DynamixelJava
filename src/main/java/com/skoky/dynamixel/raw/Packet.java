@@ -13,17 +13,12 @@ import java.util.List;
  */
 public interface Packet {
 
-    byte[] buildPing();
-    byte[] buildPing(int servoId);
-    byte[] buildWriteData(int servoId, int... params);
-    byte[] buildReadData(int servoId, int... params);
-    byte[] buildReset();
+    static final int BROADCAST = 0xFE;
+
+    byte[] buildMultiPacket(Instruction instr, int... params);
+    byte[] buildPacket(Instruction instr, int servoId, int... params);
 
     List<Data> parse(byte[] p) throws ResponseParsingException;
     Data parseFirst(byte[] p) throws ResponseParsingException, ErrorResponseV1Exception;
 
-
-    byte[] buildReboot();
-
-    byte[] buildBulkWriteData(List<Servo> servos, int... params);
 }

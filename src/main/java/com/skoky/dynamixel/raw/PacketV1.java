@@ -1,8 +1,8 @@
 package com.skoky.dynamixel.raw;
 
-import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.err.ErrorResponseV1Exception;
 import com.skoky.dynamixel.err.ResponseParsingException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * Created by skokan on 7.5.15.
  */
 public class PacketV1 extends PacketCommon implements Packet {
-    @Override
+
     public byte[] buildPing() {
         int[] buffer = new int[6];
         buffer[0]= 0xFF; //header
@@ -22,7 +22,7 @@ public class PacketV1 extends PacketCommon implements Packet {
         return toByteArray(buffer);
     }
 
-    @Override
+
     public byte[] buildPing(int servoId) {
         int[] buffer = new int[6];
         buffer[0]= 0xFF; //header
@@ -34,7 +34,7 @@ public class PacketV1 extends PacketCommon implements Packet {
         return toByteArray(buffer);
     }
 
-    @Override
+
     public byte[] buildWriteData(int servoId, int... params) {
         int[] buffer = new int[6+params.length];
         buffer[0]= 0xFF; //header
@@ -49,7 +49,7 @@ public class PacketV1 extends PacketCommon implements Packet {
         return toByteArray(buffer);
     }
 
-    @Override
+
     public byte[] buildReadData(int servoId, int... params) {
         int[] buffer = new int[6+params.length];
         buffer[0]= 0xFF; //header
@@ -64,7 +64,7 @@ public class PacketV1 extends PacketCommon implements Packet {
         return toByteArray(buffer);
     }
 
-    @Override
+
     public byte[] buildReset() {
         int[] buffer = new int[6];
         buffer[0]= 0xFF; //header
@@ -73,6 +73,26 @@ public class PacketV1 extends PacketCommon implements Packet {
         buffer[3]= 0x02;  // length
         buffer[4]= 0x06;          // WRITE_DATA
         buffer[5] = crc(buffer);    // CRC
+        return toByteArray(buffer);
+    }
+
+    @Override
+    public byte[] buildMultiPacket(Instruction instr, int... params) {
+        return buildPacket(instr,Packet.BROADCAST,params);
+    }
+
+    @Override
+    public byte[] buildPacket(Instruction instr, int servoId, int... params) {
+        int[] buffer = new int[6+params.length];
+        buffer[0]= 0xFF; //header
+        buffer[1]= 0xFF; //header
+        buffer[2]= servoId; //servo ID
+        buffer[3]= 0x02+params.length;            // length
+        buffer[4]= instr.getId();
+        for(int i=0;i<params.length;i++) {
+            buffer[5+i] = params[i];
+        }
+        buffer[5+params.length] = crc(buffer,params);    // CRC
         return toByteArray(buffer);
     }
 
@@ -110,13 +130,8 @@ public class PacketV1 extends PacketCommon implements Packet {
         return one;
     }
 
-    @Override
-    public byte[] buildReboot() {
-        return null;  // TODO implement
-    }
 
-    @Override
-    public byte[] buildBulkWriteData(List<Servo> servos, int... params) {
+    public byte[] buildMultiPacket(int instr, int... params) {
         return new byte[0];
     }
 

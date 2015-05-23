@@ -90,4 +90,7 @@ public interface Servo {
     int getHWStatusError();
 
     boolean setGoalPositionAndWait(int pos);
+
+    int getServoId();
+
 }

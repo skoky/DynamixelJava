@@ -8,15 +8,15 @@ import com.skoky.dynamixel.raw.Data;
 import com.skoky.dynamixel.raw.PacketV1;
 import com.skoky.dynamixel.servo.LedColor;
 import com.skoky.dynamixel.servo.ReturnLevel;
+import com.skoky.dynamixel.servo.ServoCommon;
 
 import java.util.logging.Logger;
 
 /**
  * Created by skoky on 5.5.15.
  */
-public class ServoAX12A implements Servo {
+public class ServoAX12A extends ServoCommon implements Servo {
     Logger log = Logger.getGlobal();
-    private final int servoId;
     private final Controller controller;
 
     public ServoAX12A(int servoId, Controller controller) {

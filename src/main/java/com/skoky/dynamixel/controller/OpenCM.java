@@ -6,10 +6,9 @@ import com.skoky.dynamixel.err.ResponseParsingException;
 import com.skoky.dynamixel.err.SerialLinkError;
 import com.skoky.dynamixel.port.SerialPort;
 import com.skoky.dynamixel.raw.Data;
+import com.skoky.dynamixel.raw.Instruction;
 import com.skoky.dynamixel.raw.Packet;
 import com.skoky.dynamixel.raw.PacketV2;
-import com.skoky.dynamixel.servo.LedColor;
-import com.skoky.dynamixel.servo.ReturnLevel;
 import com.skoky.dynamixel.servo.xl320.ServoXL320;
 
 import java.util.ArrayList;
@@ -23,6 +22,7 @@ import java.util.logging.Logger;
  * Created by skoky on 9.5.15.
  */
 public class OpenCM implements Controller {
+    private static final int BROADCAST = 0xFE;
     Logger log = Logger.getGlobal();
 
     private final Packet packet;
@@ -48,13 +48,13 @@ public class OpenCM implements Controller {
     @Override
     public List<Servo> listServos() {
 
-        byte[] ping = packet.buildPing();
+        byte[] ping = packet.buildPacket(Instruction.PING,BROADCAST);
         byte[] pingResponse;
         List<Servo> servos = new ArrayList<>();
         try {
             pingResponse = port.sendAndReceive(ping,100);
             List<Data> responses = packet.parse(pingResponse);
-            if (responses != null)
+            if (responses != null && responses.size()>0)
                 for (Data d : responses) {
                     log.fine(d.toString());
                     if (d.params[1] == 1 && d.params[2] == 27)
@@ -67,6 +67,8 @@ public class OpenCM implements Controller {
             serialLinkError.printStackTrace();
         } catch (ResponseParsingException e) {
             e.printStackTrace();
+        } catch (IllegalStateException ex) {
+            return servos;
         }
         return servos;
     }
@@ -79,7 +81,7 @@ public class OpenCM implements Controller {
 
     @Override
     public boolean rebootDevice() {
-        byte[] rebootRequest = packet.buildReboot();
+        byte[] rebootRequest = packet.buildPacket(Instruction.REBOOT,BROADCAST);
         port.sendAndReceive(rebootRequest,0);
         return true;
     }

@@ -19,76 +19,6 @@ public class PacketV2 extends PacketCommon implements  Packet {
     Logger log = Logger.getGlobal();
 
     @Override
-    public byte[] buildPing() {
-        return buildPing(0xFE);
-    }
-
-    @Override
-    public byte[] buildPing(int servoId) {
-        int[] buffer = new int[10];
-        buffer[0] = 0xFF;
-        buffer[1] = 0xFF;
-        buffer[2] = 0xFD;
-        buffer[3] = 0;
-        buffer[4] = servoId;   // 0xFE = broadcast all
-        buffer[5] = 3;    // length L
-        buffer[6] = 0;    // length H
-        buffer[7] = 0x01;    // PING
-        int crc = crc16(buffer,buffer.length-2);
-        buffer[8]=(byte) crc;           // CRC L
-        buffer[9]=(byte)(crc>>8);       // CRC H
-        return toByteArray(buffer);
-    }
-
-    @Override
-    public byte[] buildWriteData(int servoId, int... params) {
-        int[] buffer = new int[10+params.length];
-        buffer[0] = 0xFF;
-        buffer[1] = 0xFF;
-        buffer[2] = 0xFD;
-        buffer[3] = 0;
-        buffer[4] = servoId;
-        buffer[5] = 3+params.length;    // length L
-        buffer[6] = 0;    // length H
-        buffer[7] = 0x03;    // WRITE
-        for(int i=0;i<params.length;i++) {
-            buffer[8+i] = params[i];
-        }
-        int crc = crc16(buffer,buffer.length-2);
-        buffer[buffer.length-2]=(byte) crc;           // CRC L
-        buffer[buffer.length-1]=(byte)(crc>>8);       // CRC H
-        return toByteArray(buffer);
-
-    }
-
-
-    @Override
-    public byte[] buildReadData(int servoId, int... params) {
-        int[] buffer = new int[10+params.length];
-        buffer[0] = 0xFF;
-        buffer[1] = 0xFF;
-        buffer[2] = 0xFD;
-        buffer[3] = 0;
-        buffer[4] = servoId;
-        buffer[5] = 3+params.length;    // length L
-        buffer[6] = 0;    // length H
-        buffer[7] = 0x02;    // READ
-        for(int i=0;i<params.length;i++) {
-            buffer[8+i] = params[i];
-        }
-        int crc = crc16(buffer,buffer.length-2);
-        buffer[buffer.length-2]=(byte) crc;           // CRC L
-        buffer[buffer.length-1]=(byte)(crc>>8);       // CRC H
-        return toByteArray(buffer);
-    }
-
-    @Override
-    public byte[] buildReset() {
-        return new byte[0];
-    }
-
-
-    @Override
     public List<Data> parse(byte[] data) {
 
         List<Data> results = new ArrayList<Data>();
@@ -134,34 +64,18 @@ public class PacketV2 extends PacketCommon implements  Packet {
         return null;
     }
 
-    @Override
-    public byte[] buildReboot() {
-        int[] buffer = new int[10];
-        buffer[0] = 0xFF;
-        buffer[1] = 0xFF;
-        buffer[2] = 0xFD;
-        buffer[3] = 0;
-        buffer[4] = 0xFE;
-        buffer[5] = 0x3;       // length L
-        buffer[6] = 0;    // length H
-        buffer[7] = 0x03;    // WRITE
-        int crc = crc16(buffer,buffer.length-2);
-        buffer[buffer.length-2]=(byte) crc;           // CRC L
-        buffer[buffer.length-1]=(byte)(crc>>8);       // CRC H
-        return toByteArray(buffer);
-    }
 
     @Override
-    public byte[] buildBulkWriteData(List<Servo> servos, int... params) {
+    public byte[] buildPacket(Instruction instr, int servoId, int... params) {
         int[] buffer = new int[10+params.length];
         buffer[0] = 0xFF;
         buffer[1] = 0xFF;
         buffer[2] = 0xFD;
         buffer[3] = 0;
-        buffer[4] = 0xFE;
+        buffer[4] = servoId;
         buffer[5] = 3+params.length;    // length L
         buffer[6] = 0;    // length H
-        buffer[7] = 0x93; // bulk write
+        buffer[7] = instr.getId();
         for(int i=0;i<params.length;i++) {
             buffer[8+i] = params[i];
         }
@@ -172,23 +86,9 @@ public class PacketV2 extends PacketCommon implements  Packet {
     }
 
 
-    public byte[] buildBulkReadData(List<Servo> servos, int... params) {
-        int[] buffer = new int[10+params.length];
-        buffer[0] = 0xFF;
-        buffer[1] = 0xFF;
-        buffer[2] = 0xFD;
-        buffer[3] = 0;
-        buffer[4] = 0xFE;
-        buffer[5] = 3+params.length;    // length L
-        buffer[6] = 0;    // length H
-        buffer[7] = 0x92; // bulk read
-        for(int i=0;i<params.length;i++) {
-            buffer[8+i] = params[i];
-        }
-        int crc = crc16(buffer,buffer.length-2);
-        buffer[buffer.length-2]=(byte) crc;           // CRC L
-        buffer[buffer.length-1]=(byte)(crc>>8);       // CRC H
-        return toByteArray(buffer);
+    @Override
+    public byte[] buildMultiPacket(Instruction instr, int... params) {
+        return buildPacket(instr,0xFE,params);
     }
 
     private int[] toIntArray(byte[] data) {

@@ -7,6 +7,7 @@ import java.util.logging.Logger;
  */
 public abstract class ServoCommon {
 
+    protected int servoId;
 
     private Logger log = Logger.getGlobal();
 
@@ -27,4 +28,8 @@ public abstract class ServoCommon {
     protected abstract Boolean isMoving();
 
     protected abstract boolean setGoalPosition(int pos);
+
+    public int getServoId() {
+        return servoId;
+    }
 }
