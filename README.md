@@ -1,5 +1,5 @@
 
-Java library to control Dynamixel servos. Currently compatible with 
+Java library to control Robotis Dynamixel servos. Currently compatible with 
 
 * XL-320 servo using OpenCM control board
 * AX12A servors connected with USB2Dynamixel controller
@@ -40,4 +40,14 @@ Setting new servo ID:
     
     servo.setId(4);
     
-All registers are propagated to methods on the `Controller` or the `Servo` interfaces. Enjoy!
+All registers are propagated to methods on the `Controller` or the `Servo` interfaces. 
+
+Sync read and writes are also supported for several registers. 
+
+    controller.setServoList(servos);
+    Map<Integer,LedColor> leds = controller.servoList.getLedOn();
+    leds.entrySet().stream().forEach(System.out::println);
+
+    controller.servoList.setGoalPosition(400);
+    
+
