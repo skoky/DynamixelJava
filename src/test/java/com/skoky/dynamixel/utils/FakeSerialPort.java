@@ -27,7 +27,8 @@ public class FakeSerialPort implements SerialPort {
         responses = new HashMap<>(0);
         for(String line: lines){
             String[] x = line.split("->");
-            responses.put(x[0],x[1]);
+            if (x.length==2)
+                responses.put(x[0],x[1]);
         }
     }
 

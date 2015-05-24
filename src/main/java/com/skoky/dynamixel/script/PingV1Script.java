@@ -23,7 +23,7 @@ public class PingV1Script {
         Controller controller = new USB2Dynamixel(SerialPort.getPort("/dev/ttyUSB0", 1000000));
         controller.setVerbose();
         SerialPort p = controller.getPort();
-//        p.setRecordFile("src/test/resources/audit.log");
+        p.setRecordFile("src/test/resources/audit.log");
         System.out.println("Servos:" + Arrays.toString(controller.listServos().toArray()));
 
         List<Servo> servos = controller.listServos();
