@@ -1,7 +1,7 @@
 apply plugin: 'java'
 apply plugin:'application'
 
-mainClassName = "cz.skoky.xl320.Main"
+mainClassName = "com.skoky.dynamixel.Main"
 
 repositories {
     mavenCentral()
