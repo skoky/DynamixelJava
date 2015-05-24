@@ -1,12 +1,16 @@
 package com.skoky.dynamixel.port;
 
 import com.skoky.dynamixel.err.SerialLinkError;
+import jtermios.Termios;
 import purejavacomm.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -28,12 +32,12 @@ public class SerialPortImpl implements SerialPort {
         try {
             portI = CommPortIdentifier.getPortIdentifier(serialPortName);
         } catch (NoSuchPortException e) {
-            throw new SerialPortException(e.getMessage());
+            throw new SerialPortException(e.getClass().getName()+". Available ports:"+Arrays.toString(getAllPorts().toArray()));
         }
         try {
             port = (PureJavaSerialPort) portI.open("Dynamixel", 2000);
         } catch (PortInUseException e) {
-            throw new SerialPortException(e.getMessage());
+            throw new SerialPortException(e.getMessage() + ". Current lock owner:"+portI.getCurrentOwner());
         }
         log.info("Port open");
         try {
@@ -48,6 +52,16 @@ public class SerialPortImpl implements SerialPort {
                 throw new SerialPortException("Unable to set port speed. "+e.getMessage());
             }
 
+    }
+
+    private List<String> getAllPorts() {
+        Enumeration e = CommPortIdentifier.getPortIdentifiers();
+        List<String> r = new ArrayList<String>();
+        while(e.hasMoreElements()) {
+            CommPortIdentifier p = (CommPortIdentifier) e.nextElement();
+            r.add(p.getName());
+        }
+        return r;
     }
 
     public void close() {
