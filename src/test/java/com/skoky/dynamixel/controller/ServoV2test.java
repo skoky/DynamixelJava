@@ -14,6 +14,11 @@ import java.util.Arrays;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertFalse;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by skoky on 23.5.15.
@@ -21,83 +26,25 @@ import static org.junit.Assert.assertFalse;
 public class ServoV2test {
 
     @Test
-    public void testSyncPacketTwoBytes() {
+    public void testSyncPacketTwoBytes() throws DecoderException {
 
-        OpenCM controller = new OpenCM(new SerialPort() {
-            @Override
-            public void close() {
-
-            }
-
-            @Override
-            public byte[] sendAndReceive(byte[] p) throws SerialLinkError {
-                return new byte[0];
-            }
-
-            @Override
-            public byte[] sendAndReceive(byte[] p, long longSleep) throws SerialLinkError {
-                System.out.println("Received:"+ Hex.encodeHexString(p));
-                try {
-                    assertArrayEquals("Wrong bytes", Hex.decodeHex("fffffd00fe0d00831e00020001ff0302ff032191".toCharArray()), p);
-                } catch (DecoderException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            public void setRecordFile(String s) {
-
-            }
-
-            @Override
-            public void send(byte[] request) {
-
-            }
-        });
+        byte[] expected = Hex.decodeHex("fffffd00fe0d00831e00020001ff0302ff032191".toCharArray());
+        SerialPort port = mock(SerialPort.class);
+        when(port.sendAndReceive(eq(expected))).thenReturn(new byte[]{});
+        OpenCM controller = new OpenCM(port);
 
         controller.setServoList(Arrays.asList(new Servo[]{new ServoXL320(1, controller), new ServoXL320(2, controller)}));
         boolean done = controller.servoList.setGoalPosition(1023);
         assertFalse(!done);
 
-
     }
 
     @Test
-    public void testSyncPacketOneBytes() {
+    public void testSyncPacketOneBytes() throws DecoderException {
 
-        OpenCM controller = new OpenCM(new SerialPort() {
-            @Override
-            public void close() {
-
-            }
-
-            @Override
-            public byte[] sendAndReceive(byte[] p) throws SerialLinkError {
-                return new byte[0];
-            }
-
-            @Override
-            public byte[] sendAndReceive(byte[] p, long longSleep) throws SerialLinkError {
-                System.out.println("Received:"+ Hex.encodeHexString(p));
-                try {
-                    assertArrayEquals("Wrong bytes", Hex.decodeHex("fffffd00fe0b0083190001000104020455f5".toCharArray()), p);
-                } catch (DecoderException e) {
-                    e.printStackTrace();
-                }
-                return null;
-            }
-
-            @Override
-            public void setRecordFile(String s) {
-
-            }
-
-            @Override
-            public void send(byte[] request) {
-
-            }
-        });
+        SerialPort port = mock(SerialPort.class);
+        when(port.sendAndReceive(any())).thenReturn(Hex.decodeHex("fffffd00fe0b0083190001000104020455f5".toCharArray()));
+        OpenCM controller = new OpenCM(port);
 
         controller.setServoList(Arrays.asList(new Servo[]{new ServoXL320(1,controller),new ServoXL320(2,controller)}));
         boolean done = controller.servoList.setLedOn(LedColor.BLUE);

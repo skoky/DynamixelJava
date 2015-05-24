@@ -1,12 +1,22 @@
 package com.skoky.dynamixel.controller;
 
 import com.skoky.dynamixel.Servo;
+import com.skoky.dynamixel.err.ResponseParsingException;
+import com.skoky.dynamixel.raw.PacketV1;
+import com.skoky.dynamixel.raw.PacketV2;
 import com.skoky.dynamixel.servo.ax12a.ServoAX12A;
 import com.skoky.dynamixel.utils.FakeSerialPort;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static junit.framework.TestCase.assertEquals;
 import static junit.framework.TestCase.assertFalse;
@@ -59,4 +69,34 @@ public class FakeServoTest {
         assertEquals(true, servo.setGoalPosition(200));
 
     }
+
+    @Test
+    public void parsingV1() throws IOException {
+        Map<String, String> responses = new FakeSerialPort("audit_1.log").getResponses();
+        responses.values().stream().forEach(value -> {
+            try {
+                new PacketV1().parse(Hex.decodeHex(value.toCharArray()));
+            } catch (ResponseParsingException e) {
+                assertFalse(e.getMessage(),true);
+            } catch (DecoderException e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    @Test
+    public void parsingV2() throws IOException {
+        Map<String, String> responses = new FakeSerialPort("audit_2.log").getResponses();
+        responses.values().stream().forEach(value -> {
+            try {
+                new PacketV2().parse(Hex.decodeHex(value.toCharArray()));
+            } catch (ResponseParsingException e) {
+                assertFalse(e.getMessage() + " on data:"+value, true);
+            } catch (DecoderException e) {
+                e.printStackTrace();
+            }
+        });
+
+    }
+
 }

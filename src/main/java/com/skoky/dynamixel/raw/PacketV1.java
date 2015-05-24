@@ -98,8 +98,9 @@ public class PacketV1 extends PacketCommon implements Packet {
     }
 
     @Override
-    public List<Data> parse(byte[] p) throws ResponseParsingException {
+    public List<Data> parse(byte[] p) {
         if (p==null || p.length==0) throw new ResponseParsingException("Null data");
+        if (p.length<5) throw new ResponseParsingException("Data too short");
         if (p[0]!=(byte)0xFF || p[1]!=(byte)0xFF) throw new ResponseParsingException("Not starting with 0xFF. Data:"+ Hex.encodeHexString(p));
         List list = new ArrayList<Data>();
         int offset=0;

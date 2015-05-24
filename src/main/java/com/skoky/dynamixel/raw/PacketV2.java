@@ -6,6 +6,7 @@ import com.skoky.dynamixel.servo.xl320.Register;
 import org.apache.commons.codec.binary.Hex;
 
 import java.nio.ByteBuffer;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +25,8 @@ public class PacketV2 extends PacketCommon implements  Packet {
         List<Data> results = new ArrayList<Data>();
         int offset=0;
         log.fine("To parse:"+ Hex.encodeHexString(data));
-        if (data ==null || data.length==0 ) throw new IllegalStateException("Unable to parse empty array");
+        if (data ==null || data.length==0 ) throw new ResponseParsingException("Unable to parse empty array");
+        if (data.length<5) throw new ResponseParsingException("Data too short");
         while(true) {
             if (data[0+offset]!=(byte)0xFF || data[1+offset] != (byte)0xFF ||
                     data[2+offset] != (byte)0xFD || data[3+offset] != 0) break; //throw new IllegalArgumentException("Invalid packet header");
@@ -41,7 +43,7 @@ public class PacketV2 extends PacketCommon implements  Packet {
             int calculatedCRC = crc16(forCRC, 5 + length);
             if (crc3 != calculatedCRC) {
                 log.severe("CRC does not match. Calculated:"+Integer.toHexString(calculatedCRC) + " from data:"+crc3 + "CRC3:"+crc3);
-                throw new IllegalStateException("CRC does not match");
+                throw new ResponseParsingException("CRC does not match");
             }
 
             result.params = new int[length - 4];

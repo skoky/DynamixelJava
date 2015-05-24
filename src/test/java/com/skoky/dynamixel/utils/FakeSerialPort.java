@@ -66,4 +66,8 @@ public class FakeSerialPort implements SerialPort {
     public void send(byte[] request) {
 
     }
+
+    public Map<String, String> getResponses() {
+        return responses;
+    }
 }

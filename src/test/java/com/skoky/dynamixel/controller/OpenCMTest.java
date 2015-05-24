@@ -9,6 +9,11 @@ import org.junit.Test;
 import java.util.List;
 
 import static junit.framework.TestCase.assertFalse;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Created by skokan on 14.5.15.
@@ -19,32 +24,9 @@ public class OpenCMTest {
     @Test
     public void testOpenCM() {
 
-        SerialPort port = new SerialPort() {
-            @Override
-            public void close() {
+        SerialPort port = mock(SerialPort.class);
+        when(port.sendAndReceive(any(),anyLong())).thenReturn(new byte[]{(byte) 0xFF, (byte) 0xFF, 1, 2, 3, 4});
 
-            }
-
-            @Override
-            public byte[] sendAndReceive(byte[] p) {
-                return new byte[]{(byte) 0xFF, (byte) 0xFF, 1,2,3,4};
-            }
-
-            @Override
-            public byte[] sendAndReceive(byte[] p, long longSleep) throws SerialLinkError {
-                return new byte[0];
-            }
-
-            @Override
-            public void setRecordFile(String s) {
-
-            }
-
-            @Override
-            public void send(byte[] request) {
-
-            }
-        };
         OpenCM controller = new OpenCM(port);
         SerialPort p = controller.getPort();
         assertFalse(p==null);
