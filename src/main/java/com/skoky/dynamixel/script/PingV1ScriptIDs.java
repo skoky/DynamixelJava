@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class PingV1ScriptIDs {
 
-    public static void main(String[] args) throws SerialPortException {
+    public static void main(String[] args) throws SerialPortException, InterruptedException {
 
 
         Controller controller = new USB2Dynamixel(SerialPort.getPort("/dev/ttyUSB0", 1000000));
@@ -25,8 +25,9 @@ public class PingV1ScriptIDs {
         List<Servo> servos = controller.listServos();
         System.out.println("Servos:" + Arrays.toString(servos.toArray()));
 
-        Servo servo = new ServoAX12A(3,controller);
+        Servo servo = new ServoAX12A(1,controller);
         servo.setId(4);
+        Thread.sleep(1000);
         System.out.println("New id:" + servo.getId());
 
 

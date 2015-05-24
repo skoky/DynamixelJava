@@ -49,6 +49,11 @@ public class ServoV2test {
             public void setRecordFile(String s) {
 
             }
+
+            @Override
+            public void send(byte[] request) {
+
+            }
         });
 
         controller.setServoList(Arrays.asList(new Servo[]{new ServoXL320(1, controller), new ServoXL320(2, controller)}));
@@ -85,6 +90,11 @@ public class ServoV2test {
 
             @Override
             public void setRecordFile(String s) {
+
+            }
+
+            @Override
+            public void send(byte[] request) {
 
             }
         });

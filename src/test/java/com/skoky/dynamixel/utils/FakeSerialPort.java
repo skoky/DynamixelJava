@@ -60,4 +60,9 @@ public class FakeSerialPort implements SerialPort {
     public void setRecordFile(String s) {
 
     }
+
+    @Override
+    public void send(byte[] request) {
+
+    }
 }

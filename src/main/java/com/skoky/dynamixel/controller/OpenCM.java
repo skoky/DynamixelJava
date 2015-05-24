@@ -77,14 +77,14 @@ public class OpenCM implements Controller {
     @Override
     public boolean resetServos() {
         byte[] resetPacket = packet.buildPacket(Instruction.FACTORY_RESET, BROADCAST);
-        port.sendAndReceive(resetPacket,0);
+        port.send(resetPacket);
         return true;
     }
 
     @Override
     public boolean rebootDevice() {
         byte[] rebootRequest = packet.buildPacket(Instruction.REBOOT,BROADCAST);
-        port.sendAndReceive(rebootRequest,0);
+        port.send(rebootRequest);
         return true;
     }
 

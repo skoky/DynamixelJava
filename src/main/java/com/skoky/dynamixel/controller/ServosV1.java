@@ -3,12 +3,12 @@ package com.skoky.dynamixel.controller;
 import com.skoky.dynamixel.Servo;
 import com.skoky.dynamixel.ServoGroup;
 import com.skoky.dynamixel.port.SerialPort;
-import com.skoky.dynamixel.raw.Data;
 import com.skoky.dynamixel.raw.Instruction;
-import com.skoky.dynamixel.raw.PacketV2;
+import com.skoky.dynamixel.raw.Packet;
+import com.skoky.dynamixel.raw.PacketV1;
 import com.skoky.dynamixel.servo.LedColor;
 import com.skoky.dynamixel.servo.ReturnLevel;
-import com.skoky.dynamixel.servo.xl320.Register;
+import com.skoky.dynamixel.servo.ax12a.Register;
 import org.apache.commons.codec.binary.Hex;
 
 import java.util.HashMap;
@@ -20,10 +20,9 @@ import java.util.logging.Logger;
  * Created by skoky on 22.5.15.
  */
 
-public class ServosV2 implements ServoGroup {
+public class ServosV1 implements ServoGroup {
     private int[] servos;
     private SerialPort port;
-    private int cachedId;
     private Logger log = Logger.getGlobal();
 
     @Override
@@ -32,21 +31,7 @@ public class ServosV2 implements ServoGroup {
     }
 
     private Map<Integer,Integer> buildSyncRead(Register r) {
-        int[] data=new int[servos.length+4];
-        data[0]=r.getAddress();
-        data[2]=r.getSize();
-        for(int i=0;i<servos.length;i++)
-            data[4+i]=servos[i];
-        byte[] request = new PacketV2().buildMultiPacket(Instruction.SYNC_READ, data);
-        System.out.println("Sync read request:"+Hex.encodeHexString(request));
-        byte[] response = port.sendAndReceive(request,500);
-        log.fine("Sync read response:" + Hex.encodeHexString(response));
-        List<Data> result = new PacketV2().parse(response);
-        HashMap<Integer,Integer> resultMap = new HashMap<>();
-        for(Data d : result) {
-            resultMap.put(d.servoId,d.result);
-        }
-        return resultMap;
+        throw new IllegalStateException("Sync read not supported on this protocol");
     }
 
     @Override
@@ -191,19 +176,18 @@ public class ServosV2 implements ServoGroup {
 
     private boolean buildSyncWrite(Register r, int v) {
         int m = r.getSize()==1? 2 : 3;  // single or two bytes data
-        int[] data = new int[4+servos.length*m];
+        int[] data = new int[2+servos.length*m];
         data[0]=r.getAddress();
-        data[2]=r.getSize();
+        data[1]=r.getSize();
         for(int i=0;i<servos.length;i++) {
-            data[4+i*m]=servos[i];
-            data[4+i*m+1]=v%256;
-            if (m==3) data[4+i*m+2]=v/256;
+            data[2+i*m]=servos[i];
+            data[2+i*m+1]=v%256;
+            if (m==3) data[2+i*m+2]=v/256;
         }
-        byte[] request = new PacketV2().buildMultiPacket(Instruction.SYNC_WRITE, data);
-        log.fine("Sync write request " +r + ": " + Hex.encodeHexString(request));
+        byte[] request = new PacketV1().buildMultiPacket(Instruction.SYNC_WRITE, data);
+        log.fine("Sync write request " + r + ": " + Hex.encodeHexString(request));
         port.send(request);
         return true;
-
     }
 
     @Override
@@ -227,7 +211,7 @@ public class ServosV2 implements ServoGroup {
 
     @Override
     public boolean setMovingSpeed(int speed) {
-        return buildSyncWrite(Register.GOAL_VELOCITY,speed);
+        return buildSyncWrite(Register.MOVING_SPEED,speed);
     }
 
     @Override
@@ -322,12 +306,12 @@ public class ServosV2 implements ServoGroup {
 
     @Override
     public Map<Integer, Integer> getGoalVelocity() {
-        return buildSyncRead(Register.GOAL_VELOCITY);
+        return buildSyncRead(Register.MOVING_SPEED);
     }
 
     @Override
     public boolean setGoalVelocity(int velocity) {
-        return buildSyncWrite(Register.GOAL_VELOCITY,velocity);
+        return buildSyncWrite(Register.MOVING_SPEED,velocity);
     }
 
     @Override

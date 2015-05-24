@@ -2,6 +2,7 @@ package com.skoky.dynamixel.controller;
 
 import com.skoky.dynamixel.Controller;
 import com.skoky.dynamixel.Servo;
+import com.skoky.dynamixel.ServoGroup;
 import com.skoky.dynamixel.err.ResponseParsingException;
 import com.skoky.dynamixel.err.SerialLinkError;
 import com.skoky.dynamixel.port.SerialPort;
@@ -24,6 +25,7 @@ public class USB2Dynamixel implements Controller {
     Logger log = Logger.getGlobal();
     private final Packet packet;
     protected final SerialPort port;
+    public ServoGroup servoList;
 
     public USB2Dynamixel(SerialPort port) {
         packet = new PacketV1();
@@ -71,7 +73,7 @@ public class USB2Dynamixel implements Controller {
         byte[] resetResponse = new byte[0];
         List<Servo> servos = new ArrayList<>();
         try {
-            port.sendAndReceive(resetRequest,100);  // no response expected
+            port.send(resetRequest);
             return true;
         } catch (SerialLinkError serialLinkError) {
             serialLinkError.printStackTrace();
@@ -82,8 +84,8 @@ public class USB2Dynamixel implements Controller {
     @Override
     public boolean rebootDevice() {
         byte[] rebootPacket = packet.buildPacket(Instruction.REBOOT,BRODCAST);
-        port.sendAndReceive(rebootPacket,100);
-        return false;
+        port.send(rebootPacket);
+        return true;
     }
 
     @Override
@@ -93,7 +95,8 @@ public class USB2Dynamixel implements Controller {
 
     @Override
     public void setServoList(List<Servo> servos) {
-
+        servoList = new ServosV1();
+        servoList.setServos(servos, port);
     }
 
 

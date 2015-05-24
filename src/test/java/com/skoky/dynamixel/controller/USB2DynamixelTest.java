@@ -39,6 +39,11 @@ public class USB2DynamixelTest {
             public void setRecordFile(String s) {
 
             }
+
+            @Override
+            public void send(byte[] request) {
+
+            }
         };
         USB2Dynamixel controller = new USB2Dynamixel(port);
         SerialPort p = controller.getPort();

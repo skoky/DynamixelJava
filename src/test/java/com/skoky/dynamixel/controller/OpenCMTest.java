@@ -39,6 +39,11 @@ public class OpenCMTest {
             public void setRecordFile(String s) {
 
             }
+
+            @Override
+            public void send(byte[] request) {
+
+            }
         };
         OpenCM controller = new OpenCM(port);
         SerialPort p = controller.getPort();

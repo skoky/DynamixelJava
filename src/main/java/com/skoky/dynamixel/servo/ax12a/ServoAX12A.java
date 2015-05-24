@@ -393,6 +393,7 @@ public class ServoAX12A extends ServoCommon implements Servo {
 
     @Override
     public boolean setLedOn(LedColor on) {
+        if (on.getId()>1) log.info("This servo does not support requested LED color");
         if (on==LedColor.OFF)
             return sendWriteCommandNoEx(Register.LED_ON_OFF,0);
         else

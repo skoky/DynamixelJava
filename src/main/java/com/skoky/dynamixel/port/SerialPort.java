@@ -19,4 +19,6 @@ public interface SerialPort {
     }
 
     void setRecordFile(String s);
+
+    void send(byte[] request);
 }
