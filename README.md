@@ -6,7 +6,7 @@ Java library to control Robotis Dynamixel servos. Currently compatible with
 
 The library consists Java code and Arduino like code for OpenCM board. 
 
-Example usage:
+Example usage (for RESTFull API see RestServer/README.md):
 
 Getting first serial port
 
