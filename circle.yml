@@ -4,8 +4,7 @@ machine:
 
 test:
   pre:
-    - (./gradlew assemble):
-    timeout: 1200
+    - (./gradlew assemble)
 
 general:
   artifacts:
