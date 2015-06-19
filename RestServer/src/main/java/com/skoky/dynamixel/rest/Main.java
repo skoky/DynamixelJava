@@ -72,7 +72,8 @@ public class Main {
             if (param == null) return new Gson().toJson(servo.getClass().getName());
             try {
                 Object result = servo.getClass().getMethod(param).invoke(servo);
-                return new Gson().toJson(result);
+                Gson gson = new Gson();
+                return gson.toJson(result) + "<br/> supported methods: xxx";
             } catch (NoSuchMethodException e) {
                 halt(404, "Param not found");
                 return null;

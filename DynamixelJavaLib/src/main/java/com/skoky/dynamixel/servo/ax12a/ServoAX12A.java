@@ -478,6 +478,7 @@ public class ServoAX12A extends ServoCommon implements Servo {
 
 
     public void sendWriteCommand(Register register, int value) throws ResponseParsingException,ErrorResponseV1Exception {
+        if (value < register.getMin() || value> register.getMax()) throw new IllegalArgumentException("Value over limits");
         byte[] packet=null;
         if (register.getSize() == 2) {
             packet = new PacketV1().buildWriteData(servoId, register.getAddress(), value%256, value/256);
