@@ -1,10 +1,8 @@
 
 Java library to control Robotis Dynamixel servos. Currently compatible with 
 
-* XL-320 servo using OpenCM control board (A arduino sketch provided in srs/main/sketch dir)
+* XL-320 servo using OpenCM control board (with arduino sketch provided in srs/main/sketch dir)
 * AX12A servos connected with USB2Dynamixel controller
-
-The library consists Java code and Arduino like code for OpenCM board. 
 
 Example usage (for RESTFull API see RestServer/README.md):
 
