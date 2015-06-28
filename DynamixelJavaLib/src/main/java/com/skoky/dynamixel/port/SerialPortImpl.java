@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -142,4 +146,15 @@ public class SerialPortImpl implements SerialPort {
         return "SerialPortImpl{" +
                 "port=" + port.getName() + '}';
     }
+
+    ExecutorService e = Executors.newSingleThreadExecutor();
+    @Override
+    public Future sendAsync(byte[] p) {
+        Future<byte[]> f = e.submit(() -> {
+            byte[] response = sendAndReceive(p, 100);
+            return response;
+        });
+        return f;
+    }
+
 }

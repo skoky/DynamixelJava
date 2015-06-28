@@ -1,5 +1,7 @@
 package com.skoky.dynamixel.port;
 
+import java.util.concurrent.Future;
+
 /**
  * Created by skokan on 7.5.15.
  */
@@ -19,4 +21,6 @@ public interface SerialPort {
     void setRecordFile(String s);
 
     void send(byte[] request);
+
+    Future sendAsync(byte[] p);
 }
