@@ -2,6 +2,7 @@ apply plugin: 'java'
 apply plugin:'application'
 
 mainClassName = "com.skoky.dynamixel.Main"
+jar.baseName = 'DynamixelJavaLib-v1.0'
 
 dependencies {
     compile 'com.sparetimelabs:purejavacomm:0.0.22'
