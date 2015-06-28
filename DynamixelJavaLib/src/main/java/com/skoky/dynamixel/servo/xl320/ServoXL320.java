@@ -222,8 +222,7 @@ public class ServoXL320 extends ServoCommon implements Servo {
 
     @Override
     public boolean setId(int newId) {
-
-        return false;
+        return sendWriteCommandNoEx(Register.ID,newId);
     }
 
     @Override
