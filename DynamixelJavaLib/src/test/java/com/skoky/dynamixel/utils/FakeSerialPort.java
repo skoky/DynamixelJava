@@ -12,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Future;
 
 /**
  * Created by skoky on 20.5.15.
@@ -65,6 +66,11 @@ public class FakeSerialPort implements SerialPort {
     @Override
     public void send(byte[] request) {
 
+    }
+
+    @Override
+    public Future sendAsync(byte[] p) {
+        return null;
     }
 
     public Map<String, String> getResponses() {
