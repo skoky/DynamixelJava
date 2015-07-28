@@ -36,7 +36,7 @@ public class SerialPortImpl implements SerialPort {
         try {
             portI = CommPortIdentifier.getPortIdentifier(serialPortName);
         } catch (NoSuchPortException e) {
-            throw new SerialPortException(e.getClass().getName()+". Available ports:"+Arrays.toString(getAllPorts().toArray()));
+            throw new SerialPortException(e.getClass().getName()+". Available ports:"+Arrays.toString(SerialPort.listAvailablePorts().toArray()));
         }
         try {
             port = (PureJavaSerialPort) portI.open("Dynamixel", 2000);
@@ -53,15 +53,6 @@ public class SerialPortImpl implements SerialPort {
 
     }
 
-    private List<String> getAllPorts() {
-        Enumeration e = CommPortIdentifier.getPortIdentifiers();
-        List<String> r = new ArrayList<String>();
-        while(e.hasMoreElements()) {
-            CommPortIdentifier p = (CommPortIdentifier) e.nextElement();
-            r.add(p.getName());
-        }
-        return r;
-    }
 
     public void close() {
         if (port != null) port.close();
