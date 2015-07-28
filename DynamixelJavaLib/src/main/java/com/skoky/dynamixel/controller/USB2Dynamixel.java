@@ -28,12 +28,20 @@ public class USB2Dynamixel implements Controller {
     public ServoGroup servoList;
 
     public USB2Dynamixel(SerialPort port) {
+        this(port,false);
+    }
+    public USB2Dynamixel(SerialPort port, boolean debug) {
         packet = new PacketV1();
         this.port = port;
         LogManager.getLogManager().reset();
         ConsoleHandler handler = new ConsoleHandler();
-        handler.setLevel(Level.WARNING);
-        log.setLevel(Level.INFO);
+        if (debug) {
+            handler.setLevel(Level.FINEST);
+            log.setLevel(Level.FINEST);
+        } else {
+            handler.setLevel(Level.WARNING);
+            log.setLevel(Level.WARNING);
+        }
         log.addHandler(handler);
     }
 

@@ -38,7 +38,7 @@ public class ServosV2 implements ServoGroup {
         for(int i=0;i<servos.length;i++)
             data[4+i]=servos[i];
         byte[] request = new PacketV2().buildMultiPacket(Instruction.SYNC_READ, data);
-        System.out.println("Sync read request:"+Hex.encodeHexString(request));
+        log.fine("Sync read request:"+Hex.encodeHexString(request));
         byte[] response = port.sendAndReceive(request,500);
         log.fine("Sync read response:" + Hex.encodeHexString(response));
         List<Data> result = new PacketV2().parse(response);

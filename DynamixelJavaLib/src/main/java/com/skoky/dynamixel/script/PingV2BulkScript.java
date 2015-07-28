@@ -18,7 +18,7 @@ public class PingV2BulkScript {
     public static void main(String[] args) throws SerialPortException, InterruptedException {
 
 
-        OpenCM controller = new OpenCM(SerialPort.getPort("/dev/ttyACM0"));
+        OpenCM controller = new OpenCM(SerialPort.getPort("/dev/ttyACM0"),true);
 //        controller.setVerbose();
         List<Servo> servos = controller.listServos();
 

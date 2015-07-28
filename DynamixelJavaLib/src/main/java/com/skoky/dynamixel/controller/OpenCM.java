@@ -31,12 +31,20 @@ public class OpenCM implements Controller {
     public ServoGroup servoList;
 
     public OpenCM(SerialPort port) {
+        this(port,false);
+    }
+    public OpenCM(SerialPort port, boolean debug) {
         packet = new PacketV2();
         this.port = port;
         LogManager.getLogManager().reset();
         ConsoleHandler handler = new ConsoleHandler();
-        handler.setLevel(Level.ALL);
-        log.setLevel(Level.INFO);
+        if (debug) {
+            handler.setLevel(Level.ALL);
+            log.setLevel(Level.ALL);
+        } else {
+            handler.setLevel(Level.WARNING);
+            log.setLevel(Level.WARNING);
+        }
         log.addHandler(handler);
      //   log.severe("Logger created. Level:" + log.getLevel());
     }

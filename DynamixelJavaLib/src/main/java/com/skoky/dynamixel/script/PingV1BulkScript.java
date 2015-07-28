@@ -17,7 +17,7 @@ public class PingV1BulkScript {
     public static void main(String[] args) throws SerialPortException, InterruptedException {
 
 
-        USB2Dynamixel controller = new USB2Dynamixel(SerialPort.getPort("/dev/ttyUSB0",1000000));
+        USB2Dynamixel controller = new USB2Dynamixel(SerialPort.getPort("/dev/ttyUSB0",1000000),false);
         controller.setVerbose();
         controller.getPort().setRecordFile("src/test/resources/audit.log");
         List<Servo> servos = controller.listServos();
